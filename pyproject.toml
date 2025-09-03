@@ -1,0 +1,156 @@
+[project]
+name = "airflow"
+version = "0.1.0"
+description = "Apache Airflow with Weather API integration"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "langchain>=0.3.23",
+    "meilisearch>=0.34.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.13",
+]
+
+# --- To use uv as a build backend in an existing project, add uv_build to the [build-system] section ---
+[build-system]
+requires = ["uv_build>=0.6.3,<0.8.0"]
+build-backend = "uv_build"
+
+# --- START Ruff Configuration ---
+[tool.ruff]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Enable fix behavior by-default when running ruff
+fix = true
+
+# Enumerate all fixed violations.
+show-fixes = true
+
+# Exclude directories (e.g., virtual environments, build artifacts)
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors (PEP 8)
+  "F",    # pyflakes (general errors)
+  "I",    # isort (import sorting)
+  "D",    # pydocstyle (docstring conventions)
+  "UP",   # pyupgrade (modern syntax)
+  "ANN",  # flake8-annotations (type hints)
+  "B",    # flake8-bugbear (best practices)
+  "N",    # pep8-naming
+  "C90",  # mccabe (complexity)
+  # --- Newly added rules 2025-08-26 ---
+  "AIR",    # Airflow (orchestrator)
+  "ERA",    # eradicate (commented-out code)
+  "FAST",   # FastAPI (api)
+  "ASYNC",  # flake8-async (asyncio)
+  "S",      # flake8-bandit (security)
+  "BLE",    # flake8-blind-except (blind except)
+  "FBT",    # flake8-boolean-trap (boolean trap)
+  "COM",    # flake8-commas (commas)
+  "C4",     # flake8-comprehensions (comprehensions)
+  "CPY",    # flake8-copyright (copyright)
+  "DTZ",    # flake8-datetimez (datetime)
+  "T10",    # flake8-debugger (debugger)
+  "EM",     # flake8-errmsg (error messages)
+  "EXE",    # flake8-executable (executable)
+  "FIX",    # flake8-fixme (fixme)
+  "ICN",    # flake8-import-conventions (conventions)
+  "INP",    # flake8-no-pep420 (no pep420)
+  "PIE",    # flake8-pie (pie)
+  "T20",    # flake8-print (print)
+  "PYI",    # flake8-pyi (pyi)
+  "PT",     # flake8-pytest-style (pytest style)
+  "Q",      # flake8-quotes (quotes)
+  "RSE",    # flake8-return (return)
+  "SLF",    # flake8-self (self)
+  "SIM",    # flake8-simplify (simplify)
+  "ARG",    # flake8-unused-arguments (unused arguments)
+  "PTH",    # flake8-use-pathlib (use pathlib)
+  "FLY",    # flynt (flynt)
+  "PERF",   # Perflint (performance)
+  "W",      # pycodestyle warnings (PEP 8)
+  "DOC",    # pydoclint (docstring linting)
+  "RUF",    # Ruff-specific rules (ruff)
+  # --- Newly added rules 2025-08-26 ---
+]
+
+# Ignore specific rules if needed (example: ignore missing docstrings for __init__)
+ignore = [
+  "D100",  # Missing docstring in public module
+  "D104",  # Missing docstring in public package
+  # Add more as appropriate for your codebase
+]
+
+# Formatting options
+[tool.ruff.format]
+# Like Black, use double quotes for strings
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs
+indent-style = "space"
+
+# Like Black, respect magic trailing commas
+skip-magic-trailing-comma = false
+
+# Use `\n` line endings for all files
+line-ending = "lf"
+
+# Enable reformatting of code snippets in docstrings
+docstring-code-format = true
+
+# Docstring style: Google
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-annotations]
+# Suppress ANN401 for dynamically typed *args and **kwargs arguments
+allow-star-arg-any = true
+
+# Allow the omission of a return type hint for __init__ if at least one argument is annotated
+mypy-init-return = true
+
+# Suppress ANN000-level violations for arguments matching the "dummy" variable regex (like _)
+suppress-dummy-args = true
+
+# Suppress ANN200-level violations for functions
+suppress-none-returning = true
+
+[tool.ruff.lint.isort]
+# Whether to place import from imports before straight imports when sorting
+from-first = false
+
+# --- END Ruff Configuration ---
