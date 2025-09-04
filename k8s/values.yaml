@@ -1395,12 +1395,14 @@ apiServer:
     # Annotations to add to Airflow API server kubernetes service account.
     annotations: {}
   service:
-    type: ClusterIP
+    type: NodePort
     ## service annotations
     annotations: {}
     ports:
       - name: api-server
         port: "{{ .Values.ports.apiServer }}"
+        targetPort: 8080
+        nodePort: 31151
 
     loadBalancerIP: ~
     ## Limit load balancer source ips to list of CIDRs
@@ -2961,7 +2963,7 @@ dags:
     # git repo clone url
     # ssh example: git@github.com:apache/airflow.git
     # https example: https://github.com/apache/airflow.git
-    repo: https://github.com/trunleo/airflow-weather-api
+    repo: https://github.com/trunleo/airflow-weather-api.git
     branch: main
     rev: HEAD
     # The git revision (branch, tag, or hash) to check out, v4 only
