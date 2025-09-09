@@ -11,7 +11,7 @@ BASE_URL = "http://data.tmd.go.th/api/WeatherToday/V2/"
 with DAG(
     dag_id="weather_api_pipeline",
     start_date=datetime(2025, 1, 1),
-    schedule_interval="@daily",
+    schedule="@daily",
     catchup=False,
     tags=["weather", "tmd"],
     params={   # <- default params
