@@ -81,7 +81,7 @@ with DAG(
             "format": "json"
         }
         try:
-            response = requests.get(BASE_URL, params=query_params, headers={"Content-Type": CONTENT_TYPE}, timeout=15)
+            response = requests.get(BASE_URL, params=query_params, headers={"Content-Type": CONTENT_TYPE}, timeout=60)
             response.raise_for_status()
             log.info(f"Successfully fetched data from TMD API for data_type={data_type}")
             return response.json()
