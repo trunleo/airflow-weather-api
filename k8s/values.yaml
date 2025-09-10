@@ -372,7 +372,7 @@ rbac:
 # For Airflow <3.0, LocalKubernetesExecutor and CeleryKubernetesExecutor are also supported.
 # Specify executors in a prioritized list to leverage multiple execution environments as needed:
 # https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/executor/index.html#using-multiple-executors-concurrently
-executor: "CeleryExecutor"
+executor: "LocalExecutor"
 
 # If this is true and using LocalExecutor/KubernetesExecutor/CeleryKubernetesExecutor, the scheduler's
 # service account will have access to communicate with the api-server and launch pods.
@@ -565,7 +565,7 @@ jwtSecretAnnotations: {}
 jwtSecretName: ~
 
 # Flask secret key for Airflow <3 Webserver: `[webserver] secret_key` in airflow.cfg
-webserverSecretKey: ~
+webserverSecretKey: c84928f170c71c95fad6d501a4b95af9
 # Add custom annotations to the webserver secret
 webserverSecretAnnotations: {}
 webserverSecretKeySecretName: ~
@@ -3072,9 +3072,9 @@ dags:
 
 logs:
   # Configuration for empty dir volume (if logs.persistence.enabled == false)
-  # emptyDirConfig:
-  #   sizeLimit: 1Gi
-  #   medium: Memory
+  emptyDirConfig:
+    sizeLimit: 1Gi
+    medium: Memory
 
   persistence:
     # Enable persistent volume for storing logs
