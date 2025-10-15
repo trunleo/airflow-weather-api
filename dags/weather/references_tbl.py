@@ -19,11 +19,11 @@ def create_connection(postgres_conn_id: str = "WEATHER_POSTGRES_CONN") -> Weathe
 def get_reference_table(db_manager: WeatherDBManager) -> Any:
     """Fetch and log all records from the specified reference table."""
     try:
-        station_df = db_manager.get_stations()
-        logger.info(f"Stations: {station_df}")
+        station_df = db_manager.get_coordinates()
+        logger.info(f"Coordinates: {station_df}")
         return station_df
     except Exception as e:
-        logger.error(f"Error fetching records from stations: {e}")
+        logger.error(f"Error fetching records from coordinates: {e}")
         raise
         return []
     
