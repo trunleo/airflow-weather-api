@@ -68,7 +68,7 @@ with DAG(
         task_id="create_connection",
         python_callable=create_connection,
         op_kwargs={
-            "conn_id": Variable.get("WEATHER_POSTGRES_CONN", default_var="WEATHER_POSTGRES_CONN"),
+            "conn_id": "ac-weather-backend",
         },
     )
     
