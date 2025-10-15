@@ -12,7 +12,7 @@ from airflow import DAG
 from weather.current import etl_weather_current
 from weather.forecast import etl_weather_forecast
 from weather.webhook import send_notification_webhook
-from weather.references_tbl import create_postgres_connection, get_reference_table
+from weather.references_tbl import create_connection, get_reference_table
 
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",
@@ -66,7 +66,7 @@ with DAG(
     # )
     create_conn = PythonOperator(
         task_id="create_connection",
-        python_callable=create_postgres_connection,
+        python_callable=create_connection,
         op_kwargs={
             "conn_id": Variable.get("WEATHER_POSTGRES_CONN", default_var="WEATHER_POSTGRES_CONN"),
         },
