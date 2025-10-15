@@ -15,7 +15,7 @@ from weather.webhook import send_notification_webhook
 from weather.references_tbl import create_connection, get_reference_table
 
 # Create the database connection using the create_connection function
-db_manager = create_connection(conn_id="ac-weather-backend")
+db_manager = create_connection(postgres_conn_id="ac-weather-backend")
 
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",
