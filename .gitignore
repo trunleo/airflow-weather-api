@@ -171,3 +171,11 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+# Kubernetes secrets with sensitive data
+k8s/secret.yaml
+
+# Additional security
+*.key
+*.pem
+*.crt
