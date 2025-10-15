@@ -14,6 +14,9 @@ from weather.forecast import etl_weather_forecast
 from weather.webhook import send_notification_webhook
 from weather.references_tbl import create_connection, get_reference_table
 
+# Create the database connection using the create_connection function
+db_manager = create_connection(conn_id="ac-weather-backend")
+
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",
     "depends_on_past": False,
@@ -64,22 +67,22 @@ with DAG(
     #         ),
     #     },
     # )
-    create_conn = PythonOperator(
-        task_id="create_connection",
-        python_callable=create_connection,
-        op_kwargs={
-            "conn_id": "ac-weather-backend",
-        },
-    )
+    # create_conn = PythonOperator(
+    #     task_id="create_connection",
+    #     python_callable=create_connection,
+    #     op_kwargs={
+    #         "conn_id": "ac-weather-backend",
+    #     },
+    # )
     
     get_ref_tbl = PythonOperator(
         task_id="get_reference_table",
         python_callable=get_reference_table,
         op_kwargs={
-            "db_manager": "{{ ti.xcom_pull(task_ids='create_connection') }}",
+            "db_manager": db_manager,
         },
     )
 
     # Trigger notify webhook
     # weather_etl >> trigger_notify
-    create_conn >> get_ref_tbl
+    # create_conn >> get_ref_tbl
