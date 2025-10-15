@@ -53,7 +53,7 @@ with DAG(
         python_callable=send_notification_webhook,
         op_kwargs={
             "run_date": "{{ next_ds }}",
-            "webhook_url": Variable.get("WEATHER_WEBHOOK_URL"),
+            "webhook_url": Variable.get("WEATHER_WEBHOOK_URL", default_var=""),
             "postgres_conn_id": "WEATHER_POSTGRES_CONN",
             "webhook_api_key": Variable.get(
                 "WEATHER_WEBHOOK_API_KEY", default_var=None
