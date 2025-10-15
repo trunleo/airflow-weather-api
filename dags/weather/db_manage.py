@@ -226,7 +226,7 @@ class WeatherDBManager:
                 id,
                 latitude,
                 longitude
-            FROM coordinates
+            FROM coordinate
             ORDER BY id
         """
         
