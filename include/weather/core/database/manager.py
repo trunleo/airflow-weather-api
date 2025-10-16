@@ -10,6 +10,7 @@ import logging
 
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.exceptions import AirflowException
+import pandas as pd
 
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ class WeatherDBManager:
         self, 
         query: str, 
         parameters: Optional[tuple] = None
-    ) -> 'pandas.DataFrame':
+    ) -> pd.DataFrame:
         """Fetch records as pandas DataFrame.
         
         Args:
@@ -200,18 +201,18 @@ class WeatherDBManager:
         """
         query = """
             SELECT
-                s.id,
-                s.name,
-                s.latitude,
-                s.longitude,
-                p.name as province_name
-            FROM station s
-            LEFT JOIN province p ON s.province_id = p.id
-            ORDER BY s.name
+                id,
+                name,
+                latitude,
+                longitude,
+                name_th as station_name_th,
+                name_en as station_name_en
+            FROM station
+            ORDER BY name
         """
         
         records = self.fetch_records(query)
-        columns = ["id", "name", "latitude", "longitude", "province_name"]
+        columns = ["id", "name", "latitude", "longitude", "name_th", "name_en"]
         
         return [dict(zip(columns, row, strict=False)) for row in records]
     
