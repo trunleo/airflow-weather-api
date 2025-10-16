@@ -3,6 +3,19 @@ import logging
 from typing import Any
 
 logger = logging.getLogger(__name__)
+
+
+def create_connection(postgres_conn_id: str) -> WeatherDBManager:
+    """Create a WeatherDBManager instance with the specified connection ID.
+    
+    Args:
+        postgres_conn_id: The Airflow PostgreSQL connection ID.
+        
+    Returns:
+        WeatherDBManager instance.
+    """
+    logger.info(f"Creating database connection with conn_id: {postgres_conn_id}")
+    return WeatherDBManager(postgres_conn_id=postgres_conn_id)
     
 def get_reference_table(db_manager: WeatherDBManager, ref_tbl_name: str = "", **kwargs) -> Any:
     """Fetch and log all records from the specified reference table."""
