@@ -9,9 +9,8 @@ from airflow.utils.task_group import TaskGroup
 from airflow import DAG
 
 # Functions ETL
-from weather.current import etl_weather_current
-from weather.forecast import etl_weather_forecast
-from weather.webhook import send_notification_webhook
+from include.weather.core.etl.current import etl_weather_current
+from include.weather.core.etl.forecast import etl_weather_forecast
 
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",

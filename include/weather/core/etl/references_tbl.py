@@ -1,4 +1,4 @@
-from weather.db_manage import WeatherDBManager
+from include.weather.core.database.manager import WeatherDBManager
 import logging
 from typing import Any
 
@@ -25,6 +25,7 @@ def get_reference_table(db_manager: WeatherDBManager) -> Any:
     except Exception as e:
         logger.error(f"Error fetching records from coordinates: {e}")
         raise
+        return [] 
         return []
     
     
