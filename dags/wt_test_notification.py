@@ -36,12 +36,12 @@ with DAG(
     # TaskGroup to group ETL tasks
     with TaskGroup("load_ref", tooltip="Load Reference tbl") as load_ref:
         get_ref_tbl = PythonOperator(
-        task_id="get_reference_table",
-        python_callable=get_reference_table,
-        op_kwargs={
-            "db_manager": db_manager,
-            "ref_tbl_name": "coordinate",
-            },
+            task_id="get_reference_table_coordinate",
+            python_callable=get_reference_table,
+            op_kwargs={
+                "db_manager": db_manager,
+                "ref_tbl_name": "coordinate",
+                },
         )
         
         get_ref_tbl = PythonOperator(

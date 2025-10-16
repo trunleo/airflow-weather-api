@@ -202,7 +202,7 @@ class WeatherDBManager:
         query = """
             SELECT
                 id,
-                name,
+                wmo_station_number,
                 latitude,
                 longitude,
                 name_th as station_name_th,
@@ -212,7 +212,7 @@ class WeatherDBManager:
         """
         
         records = self.fetch_records(query)
-        columns = ["id", "name", "latitude", "longitude", "name_th", "name_en"]
+        columns = ["id", "wmo_station_number", "latitude", "longitude", "name_th", "name_en"]
         
         return [dict(zip(columns, row, strict=False)) for row in records]
     
