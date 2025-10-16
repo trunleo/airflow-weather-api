@@ -47,21 +47,21 @@ with DAG(
             op_kwargs={"run_date": "{{ next_ds }}"},
         )
 
-    trigger_notify = PythonOperator(
-        task_id="trigger_notify",
-        python_callable=send_notification_webhook,
-        op_kwargs={
-            "run_date": "{{ next_ds }}",
-            "webhook_url": Variable.get("WEATHER_WEBHOOK_URL", default_var=""),
-            "postgres_conn_id": "WEATHER_POSTGRES_CONN",
-            "webhook_api_key": Variable.get(
-                "WEATHER_WEBHOOK_API_KEY", default_var=None
-            ),
-            "webhook_secret": Variable.get(
-                "WEATHER_WEBHOOK_SECRET", default_var=None
-            ),
-        },
-    )
+    # trigger_notify = PythonOperator(
+    #     task_id="trigger_notify",
+    #     python_callable=send_notification_webhook,
+    #     op_kwargs={
+    #         "run_date": "{{ next_ds }}",
+    #         "webhook_url": Variable.get("WEATHER_WEBHOOK_URL", default_var=""),
+    #         "postgres_conn_id": "WEATHER_POSTGRES_CONN",
+    #         "webhook_api_key": Variable.get(
+    #             "WEATHER_WEBHOOK_API_KEY", default_var=None
+    #         ),
+    #         "webhook_secret": Variable.get(
+    #             "WEATHER_WEBHOOK_SECRET", default_var=None
+    #         ),
+    #     },
+    # )
 
     # Trigger notify webhook
     weather_etl >> trigger_notify
