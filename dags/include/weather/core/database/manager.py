@@ -208,7 +208,7 @@ class WeatherDBManager:
                 name_th as station_name_th,
                 name_en as station_name_en
             FROM station
-            ORDER BY name
+            ORDER BY name_en
         """
         
         records = self.fetch_records(query)
