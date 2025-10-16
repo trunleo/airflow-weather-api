@@ -33,14 +33,34 @@ with DAG(
     tags=["weather", "data-engineer"],
 ) as dag:
     
-    get_ref_tbl = PythonOperator(
+    # TaskGroup to group ETL tasks
+    with TaskGroup("load_ref", tooltip="Load Reference tbl") as load_ref:
+        get_ref_tbl = PythonOperator(
         task_id="get_reference_table",
         python_callable=get_reference_table,
         op_kwargs={
             "db_manager": db_manager,
-        },
-    )
+            "ref_tbl_name": "coordinate",
+            },
+        )
+        
+        get_ref_tbl = PythonOperator(
+            task_id="get_reference_table_station",
+            python_callable=get_reference_table,
+            op_kwargs={
+                "db_manager": db_manager,
+                "ref_tbl_name": "station",
+            },
+        )
+        
+        # Additional ETL tasks can be added here in the future
+    # Task to trigger notification webhook (placeholder)
+    # trigger_notify = PythonOperator(
+    #     task_id="trigger_notification_webhook",
+    #     python_callable=lambda: print("Triggering notification webhook..."),
+    # )
 
+    
     # Trigger notify webhook
     # weather_etl >> trigger_notify
     # create_conn >> get_ref_tbl
