@@ -261,4 +261,4 @@ cleanup_task = PythonOperator(
 )
 
 # Set Task Dependencies
-fetch_weather_task >> store_data_task >> validate_data_task >> cleanup_task
+fetch_weather_task >> store_data_task >> cleanup_task
