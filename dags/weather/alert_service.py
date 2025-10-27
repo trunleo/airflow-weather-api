@@ -538,4 +538,3 @@ class WeatherAlertService:
         all_alerts.extend(self._detect_humidity_alerts(forecast_data))
 
         return all_alerts
-
