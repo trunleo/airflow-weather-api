@@ -1,6 +1,8 @@
 """Weather daily pipeline DAG."""
 
 from datetime import datetime, timedelta
+from airflow.models.param import Param
+
 
 from airflow.models import Variable
 from airflow.operators.python import PythonOperator
@@ -10,7 +12,7 @@ from airflow import DAG
 
 # Functions ETL
 from weather.forecast_10days import etl_weather_forecast_10days
-# from weather.webhook import send_notification_webhook
+from weather.alert_service import send_weather_alert
 
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",
@@ -25,10 +27,19 @@ default_args = {
     "pool": "data-engineer" 
 }
 
+default_params = {
+    "event_api": Param(
+        default="weather/internal/webhooks/weather-notification",
+        type="string",
+        description="The base URL for the alert service API",
+    )
+}
+
 with DAG(
     "wt_forecast_10days_pipeline",
     description="Weather forecast 10days pipeline",
     default_args=default_args,
+    params=default_params,
     tags=["weather", "data-engineer"],
 ) as dag:
 
@@ -41,22 +52,11 @@ with DAG(
             op_kwargs={"run_date": "{{ next_ds }}"},
         )
 
-    # trigger_notify = PythonOperator(
-    #     task_id="trigger_notify",
-    #     python_callable=send_notification_webhook,
-    #     op_kwargs={
-    #         "run_date": "{{ next_ds }}",
-    #         "webhook_url": Variable.get("WEATHER_WEBHOOK_URL"),
-    #         "postgres_conn_id": "WEATHER_POSTGRES_CONN",
-    #         "weather_webkook_key": Variable.get(
-    #             "WEATHER_WEBHOOK_KEY", default_var=None
-    #         ),
-    #         "webhook_secret": Variable.get(
-    #             "WEATHER_WEBHOOK_SECRET", default_var=None
-    #         ),
-    #     },
-    # )
-
-    # Trigger notify webhook
-    # weather_etl >> trigger_notify
-    weather_etl
+    trigger_hook = PythonOperator(
+            task_id="trigger_hook",
+            python_callable=send_weather_alert,
+            op_args=["{{ params.event_api }}"],
+        )
+    
+    # Ensure trigger_hook runs only if forecast_task succeeds
+    forecast_task >> trigger_hook

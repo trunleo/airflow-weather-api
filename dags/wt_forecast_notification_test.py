@@ -1,8 +1,7 @@
 """Weather daily pipeline DAG."""
 
-from datetime import datetime, timedelta
 from airflow.models.param import Param
-
+from datetime import datetime, timedelta
 
 from airflow.models import Variable
 from airflow.operators.python import PythonOperator
@@ -14,7 +13,6 @@ from airflow import DAG
 from weather.current import etl_weather_current
 from weather.forecast import etl_weather_forecast
 from weather.alert_service import send_weather_alert
-
 
 default_args = {
     "owner": "trung.tran@vnsilicon.net,khai.do@vnsilicon.net",
@@ -34,36 +32,24 @@ default_params = {
         default="weather/internal/webhooks/weather-notification",
         type="string",
         description="The base URL for the alert service API",
-    ),
-    "WORKAROUND_CURRENT_TBL": Param(
-        default="weather_current_workaround_v2",
-        type="string",
-        description="The workaround table for current weather data",
     )
 }
 
 with DAG(
-    "wt_forecast_daily_pipeline",
-    description="Weather forecast pipeline",
+    "wt_forecast_notification_test",
+    description="Weather forecast notification test pipeline",
     default_args=default_args,
-    params=default_params,
     tags=["weather", "data-engineer"],
+    params=default_params
 ) as dag:
 
     with TaskGroup(
         "weather_etl", tooltip="Extract weather data"
     ) as weather_etl:
-        forecast_task = PythonOperator(
-            task_id="forecast_weather",
-            python_callable=etl_weather_forecast,
-            op_kwargs={"run_date": "{{ next_ds }}", "WORKAROUND_CURRENT_TBL": "{{ params.WORKAROUND_CURRENT_TBL }}"},
-        )
-    
-    trigger_hook = PythonOperator(
+        trigger_hook = PythonOperator(
             task_id="trigger_hook",
             python_callable=send_weather_alert,
             op_args=["{{ params.event_api }}"],
         )
-
-    # Ensure trigger_hook runs only if forecast_task succeeds
-    forecast_task >> trigger_hook
+    
+    

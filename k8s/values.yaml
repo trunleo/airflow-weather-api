@@ -2657,6 +2657,7 @@ config:
     # This is ignored when used with the official Docker image
     load_examples: 'False'
     executor: '{{ .Values.executor }}'
+    plugins_folder: '/opt/airflow/plugins'
     # For Airflow 1.10, backward compatibility; moved to [logging] in 2.0
     colored_console_log: 'False'
     remote_logging: '{{- ternary "True" "False" (or .Values.elasticsearch.enabled .Values.opensearch.enabled) }}'
@@ -2900,4 +2901,47 @@ logs:
     storageClassName:
     ## the name of an existing PVC to use
     existingClaim:
+
+# Plugins configuration
+plugins:
+  # Where plugins volume will be mounted
+  mountPath: /opt/airflow/plugins
+  persistence:
+    # Enable persistent volume for storing plugins
+    enabled: false
+    # Volume size for plugins
+    size: 1Gi
+    # If using a custom storageClass, pass name here
+    storageClassName:
+    # access mode of the persistent volume
+    accessMode: ReadWriteOnce
+    ## the name of an existing PVC to use
+    existingClaim:
+    ## optional subpath for plugins volume mount
+    subPath: ~
+  gitSync:
+    enabled: true
+    # git repo clone url (same as dags repo)
+    repo: https://github.com/trunleo/airflow-weather-api.git
+    branch: main
+    rev: HEAD
+    ref: v2-2-stable
+    depth: 1
+    maxFailures: 0
+    # subpath within the repo where plugins are located
+    subPath: "plugins"
+    # Use the same credentials as dags if needed
+    credentialsSecret: git-credentials
+    # interval between git sync attempts
+    period: 5s
+    wait: ~
+    containerName: plugins-git-sync
+    uid: 65533
+    securityContext: {}
+    securityContexts:
+      container: {}
+    containerLifecycleHooks: {}
+    extraVolumeMounts: []
+    env: []
+    resources: {}
 

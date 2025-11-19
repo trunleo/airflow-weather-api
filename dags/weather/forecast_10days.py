@@ -11,6 +11,7 @@ import requests
 
 # Optional: load .env if present (not mandatory if you set env via docker)
 logger = logging.getLogger(__name__)
+id_filter=""
 
 POSTGRES_CONN_ID_OUT = Variable.get("POSTGRES_CONN_ID_OUT", default_var=Variable.get("POSTGRES_CONN_ID", default_var="weather_pg"))
 POSTGRES_CONN_ID_IN  = Variable.get("POSTGRES_CONN_ID_IN", default_var=POSTGRES_CONN_ID_OUT)

@@ -11,6 +11,7 @@ import time
 import requests
 
 logger = logging.getLogger(__name__)
+id_filter=""
 
 POSTGRES_CONN_ID_OUT = Variable.get("POSTGRES_CONN_ID_OUT", default_var=Variable.get("POSTGRES_CONN_ID", default_var="weather_pg"))
 POSTGRES_CONN_ID_IN  = Variable.get("POSTGRES_CONN_ID_IN", default_var=POSTGRES_CONN_ID_OUT)
@@ -289,6 +290,7 @@ def etl_weather_forecast(run_date: str, **kwargs: dict) -> None:
                 r["created_at"] = now_local.strftime("%Y-%m-%d %H:%M:%S")
                 r["updated_at"] = now_local.strftime("%Y-%m-%d %H:%M:%S")
                 r["forecast_datetime"] = r["time"]
+                r['observation_datetime'] = r["time"]
             all_rows.extend(rows)
             logger.info(" -> %s rows", len(rows))
         except AirflowSkipException:
@@ -316,5 +318,28 @@ def etl_weather_forecast(run_date: str, **kwargs: dict) -> None:
           %(wd850)s, %(wd925)s, %(ws10m)s, %(ws200)s, %(ws500)s, %(ws700)s, %(ws850)s,
           %(ws925)s, %(coordinate_id)s, %(wdfn)s, %(created_at)s, %(updated_at)s"""
     )
+    
+    logger.info("Inserted %s forecast rows into Postgres table %s", count, FORECAST_TABLE)
+    # 5) Load to workaround table for adhoc forecast if enabled
+    if kwargs['WORKAROUND_CURRENT_TBL']:
+        workaround_tbl = kwargs['WORKAROUND_CURRENT_TBL']
+        pg_hook_out = ForecastPostgresHook(postgres_conn_id=POSTGRES_CONN_ID_OUT)
+        workaround_count = pg_hook_out.insert_forecast(
+            table=workaround_tbl,
+            rows=all_rows,
+            on_conflict=ON_CONFLICT.replace("forecast_datetime", "observation_datetime"),
+            page_size=PAGE_SIZE,
+            column_name=[
+                "observation_datetime", "cloudhigh", "cloudlow", "cloudmed", "cond",
+                "rain", "rh", "slp", "tc", "wd10m", "wd200", "wd500", "wd700",
+                "wd850", "wd925", "ws10m", "ws200", "ws500", "ws700", "ws850",
+                "ws925", "coordinate_id", "wdfn", "created_at", "updated_at"
+            ],
+            column_value=""" %(observation_datetime)s, %(cloudhigh)s, %(cloudlow)s, %(cloudmed)s, %(cond)s,
+            %(rain)s, %(rh)s, %(slp)s, %(tc)s, %(wd10m)s, %(wd200)s, %(wd500)s, %(wd700)s,
+            %(wd850)s, %(wd925)s, %(ws10m)s, %(ws200)s, %(ws500)s, %(ws700)s, %(ws850)s,
+            %(ws925)s, %(coordinate_id)s, %(wdfn)s, %(created_at)s, %(updated_at)s"""
+        )
+        logger.info("Loaded workaround current forecast for conditions: %s", workaround_count)
 
     return count
