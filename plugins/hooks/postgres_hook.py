@@ -77,6 +77,7 @@ class ForecastPostgresHook(PostgresHook):
             {column_value}
         ){conflict_clause};
         """
+        logger.info("SQL to execute: %s", sql)
 
         with self.get_conn() as conn:
             with conn.cursor() as cur:
