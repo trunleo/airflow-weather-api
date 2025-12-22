@@ -13,7 +13,7 @@ import requests
 logger = logging.getLogger(__name__)
 id_filter=""
 
-POSTGRES_CONN_ID_OUT = Variable.get("POSTGRES_CONN_ID_OUT", default_var=Variable.get("POSTGRES_CONN_ID", default_var="weather_pg"))
+POSTGRES_CONN_ID_OUT = Variable.get("POSTGRES_CONN_ID_OUT", default_var=Variable.get("POSTGRES_CONN_ID", default_var="weather-pg"))
 POSTGRES_CONN_ID_IN  = Variable.get("POSTGRES_CONN_ID_IN", default_var=POSTGRES_CONN_ID_OUT)
 FORECAST_TABLE       = Variable.get("FORECAST_TABLE", default_var="public.weather_forecast")
 FORECAST_SCHEDULE    = Variable.get("FORECAST_SCHEDULE", default_var="@daily")

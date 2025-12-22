@@ -108,7 +108,7 @@ def etl_weather_current(run_date: str, **kwargs: dict) -> None:
 
     insert = DbInsertOperator(
         task_id="insert_weather_current",
-        postgres_conn_id="weather_pg",
+        postgres_conn_id="weather-pg",
         table="public.weather_current",
         # Insert-only, no upsert. Toggle on_conflict to "DO NOTHING" if you want to skip dupes.
         on_conflict="DO NOTHING",  # or None to raise on constraint violations
