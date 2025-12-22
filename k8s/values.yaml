@@ -79,8 +79,8 @@ airflowVersion: "2.10.5"
 # Images
 images:
   airflow:
-    repository: ~
-    tag: ~
+    repository: aisac-airflow-data
+    tag: 0.1.0
     # Specifying digest takes precedence over tag.
     digest: ~
     pullPolicy: IfNotPresent
