@@ -21,17 +21,17 @@ default_args = {
     "catchup": False,
 }
 
-TRINO_HOST = Variable.get("TRINO_HOST", default_var="trino.aisac-dev.vnsilicon.cloud")
+TRINO_HOST = str(Variable.get("TRINO_HOST", default_var="trino.aisac-dev.vnsilicon.cloud"))
 print(TRINO_HOST)
-TRINO_PORT = Variable.get("TRINO_PORT", default_var=443)
+TRINO_PORT = int(Variable.get("TRINO_PORT", default_var=443))
 print(TRINO_PORT)
-TRINO_USER = Variable.get("TRINO_USER", default_var="")
+TRINO_USER = str(Variable.get("TRINO_USER", default_var=""))
 print(TRINO_USER)
-TRINO_PASSWORD = Variable.get("TRINO_PASSWORD", default_var="")
+TRINO_PASSWORD = str(Variable.get("TRINO_PASSWORD", default_var=""))
 print(TRINO_PASSWORD)
-TRINO_CATALOG = Variable.get("TRINO_CATALOG", default_var="")
+TRINO_CATALOG = str(Variable.get("TRINO_CATALOG", default_var=""))
 print(TRINO_CATALOG)
-TRINO_SCHEMA = Variable.get("TRINO_SCHEMA", default_var="")
+TRINO_SCHEMA = str(Variable.get("TRINO_SCHEMA", default_var=""))
 print(TRINO_SCHEMA)
 
 def check_dns():
