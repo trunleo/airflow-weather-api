@@ -8,6 +8,8 @@ from airflow.models import Variable
 from trino.dbapi import connect
 from trino.auth import BasicAuthentication
 import pandas as pd
+from hooks.postgres_hook import ForecastPostgresHook
+
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +92,11 @@ def check_trino_connection():
     df = pd.read_sql_query("SELECT 1", conn)
     logger.info("Connected to Trino")
 
+def check_pg_connection():
+    pg_hook = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
+    df = pg_hook.get_records("SELECT 1")
+    logger.info("Connected to Postgres")
+
 
 with DAG(
     "debug_network_tools",
@@ -119,4 +126,9 @@ with DAG(
         python_callable=check_trino_connection,
     )
 
-    dns_task >> tcp_task >> curl_task >> trino_task
+    pg_task = PythonOperator(
+            task_id="check_pg",
+        python_callable=check_pg_connection,
+    )
+
+    dns_task >> tcp_task >> curl_task >> trino_task >> pg_task
