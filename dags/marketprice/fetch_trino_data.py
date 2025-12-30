@@ -31,7 +31,6 @@ pg_hook_out = ForecastPostgresHook(postgres_conn_id=POSTGRES_CONN_ID_OUT)
 def check_trino_connection():
     if not conn.check_connect():
         raise AirflowSkipException("Failed to connect to Trino")
-    conn.run("SELECT 1")
     logger.info("Connected to Trino")
     
 

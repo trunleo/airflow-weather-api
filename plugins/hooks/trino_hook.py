@@ -39,7 +39,7 @@ class TrinoHook:
 
     def check_connect(self):
         try:
-            self.conn.cursor()
+            self.run("SELECT 1")
             logger.info("Connect successfully!")
             return True
         except Exception as e:
