@@ -7,6 +7,7 @@ from airflow.operators.python import PythonOperator
 from airflow.models import Variable
 from trino.dbapi import connect
 from trino.auth import BasicAuthentication
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +87,7 @@ def check_trino_connection():
             schema=str(TRINO_SCHEMA),
             request_timeout=10,
         )
-    conn.run("SELECT 1")
+    df = pd.read_sql_query("SELECT 1", conn)
     logger.info("Connected to Trino")
 
 
