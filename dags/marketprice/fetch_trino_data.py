@@ -18,7 +18,7 @@ conn = TrinoHook(
     schema=str(Variable.get("TRINO_SCHEMA", default_var="")),
 )
 
-pg_hook_out = ForecastPostgresHook(postgres_conn_id=weather_db_connection_id)
+pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
 
 
 def check_trino_connection():
