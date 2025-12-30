@@ -17,12 +17,12 @@ POSTGRES_CONN_ID_IN = Variable.get(
 )
 
 conn = TrinoHook(
-    host=Variable.get("TRINO_HOST", default_var=""),
-    port=Variable.get("TRINO_PORT", default_var=443),
-    user=Variable.get("TRINO_USER", default_var=""),
-    password=Variable.get("TRINO_PASSWORD", default_var=""),
-    catalog=Variable.get("TRINO_CATALOG", default_var=""),
-    schema=Variable.get("TRINO_SCHEMA", default_var=""),
+    host=str(Variable.get("TRINO_HOST", default_var="")),
+    port=int(Variable.get("TRINO_PORT", default_var=443)),
+    user=str(Variable.get("TRINO_USER", default_var="")),
+    password=str(Variable.get("TRINO_PASSWORD", default_var="")),
+    catalog=str(Variable.get("TRINO_CATALOG", default_var="")),
+    schema=str(Variable.get("TRINO_SCHEMA", default_var="")),
 )
 
 pg_hook_out = ForecastPostgresHook(postgres_conn_id=POSTGRES_CONN_ID_OUT)
