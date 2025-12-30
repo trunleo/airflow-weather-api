@@ -33,9 +33,6 @@ class TrinoHook:
         try:
             self.conn.cursor()
             logger.info("Connect successfully")
-            logger.info("Host: ", self.conn.host)
-            logger.info("Catalog: ", self.conn.catalog)
-            logger.info("Schema: ", self.schema)
             return True
         except Exception as e:
             logger.error("Failed to connect to Trino: %s", e)
