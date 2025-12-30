@@ -50,8 +50,8 @@ def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **conte
 def fetch_dim_tables(**context):
     logger.info("Fetching dim tables")
     # Get list of dim tables from context
-    start_date = context.get("start_date")
-    end_date = context.get("end_date")
+    # start_date = context.get("start_date")
+    # end_date = context.get("end_date")
     logger.info("Fech data from %s to %s", start_date, end_date)
     if "dim_tables" in context:
         list_dim_tables = [
@@ -67,7 +67,8 @@ def fetch_dim_tables(**context):
         ]
     for table_name in list_dim_tables:
         logger.info("Fetching %s", table_name)
-        count = fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
+        # count = fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
+        count = fetch_trino_table(table_name, conflict_key=["id"])
         logger.info("Inserted %s rows into %s", count, table_name)
 
 
