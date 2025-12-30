@@ -66,8 +66,8 @@ def fetch_dim_tables(**context):
             "dim_units",
         ]
     for table_name in list_dim_tables:
-        fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
-    logger.info("Inserted %s rows into %s", count, table_name)
+        count = fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
+        logger.info("Inserted %s rows into %s", count, table_name)
 
 
 def fetch_fact_tables(**context):
@@ -83,5 +83,5 @@ def fetch_fact_tables(**context):
     else:
         list_fact_tables = ["fact_daily_prices"]
     for table_name in list_fact_tables:
-        fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date)
-    logger.info("Inserted %s rows into %s", count, table_name)
+        count = fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date)
+        logger.info("Inserted %s rows into %s", count, table_name)
