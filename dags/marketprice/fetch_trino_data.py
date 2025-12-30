@@ -34,7 +34,7 @@ def check_trino_connection():
 
 
 def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **context):
-    conditions = "WHERE price_date >= '{{ context['start_date'] }}' AND price_date <= '{{ context['end_date'] }}'" if "start_date" in context and "end_date" in context else ""
+    conditions = f"price_date >= {context['start_date']} AND price_date <= {context['end_date']}" if "start_date" in context and "end_date" in context else ""
     if table_name:
         df = conn.get_table(table_name, condition=conditions)
         count = pg_hook_out.upsert_table(
