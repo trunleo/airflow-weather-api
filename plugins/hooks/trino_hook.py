@@ -25,6 +25,12 @@ class TrinoHook:
             catalog=catalog,
             schema=schema,
         )
+        self.schema = schema
+        self.catalog = catalog
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
 
     def get_conn(self) -> connect:
         return self.conn
@@ -32,7 +38,7 @@ class TrinoHook:
     def check_connect(self):
         try:
             self.conn.cursor()
-            logger.info("Connect successfully")
+            logger.info("Connect successfully!")
             return True
         except Exception as e:
             logger.error("Failed to connect to Trino: %s", e)
@@ -46,8 +52,8 @@ class TrinoHook:
     def get_table(self, table_name: str, **context) -> pd.DataFrame:
         """Retrieves the specified table from the database and returns it as a pandas DataFrame."""
         if context['condition']:
-            return self.run(f"SELECT * FROM {table_name} WHERE {context['condition']}")
-        return self.run(f"SELECT * FROM {table_name}")
+            return self.run(f"SELECT * FROM {self.schema}.{table_name} WHERE {context['condition']}")
+        return self.run(f"SELECT * FROM {self.schema}.{table_name}")
 
     def insert_table(self, table_name: str, df: pd.DataFrame) -> None:
         """Inserts the specified DataFrame into the specified table in the database."""
