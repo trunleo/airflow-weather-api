@@ -4,6 +4,9 @@ import logging
 import subprocess
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.models import Variable
+from trino.dbapi import connect
+from trino.auth import BasicAuthentication
 
 logger = logging.getLogger(__name__)
 
