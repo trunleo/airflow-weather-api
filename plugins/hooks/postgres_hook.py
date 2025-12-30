@@ -129,13 +129,13 @@ class ForecastPostgresHook(PostgresHook):
             logger.info("No rows to insert into %s", table)
             return 0
 
-        params = [{c: r.get(c) for c in column_name} for r in df.values.tolist()]
+        params = df[column_name].to_dict("records")
         if conflict_key:
             conflict_clause = f" ON CONFLICT ({", ".join(conflict_key)}) DO UPDATE SET {', '.join([f'{c} = EXCLUDED.{c}' for c in column_name])}"
         else:
             conflict_clause = ""
         
-        column_value = df.values.tolist()
+        column_value = df[column_name].to_dict("records")
 
         sql = f"""
         INSERT INTO {table} ({", ".join(column_name)})
