@@ -32,6 +32,11 @@ def check_trino_connection():
     if not conn.check_connect():
         raise AirflowSkipException("Failed to connect to Trino")
     logger.info("Connected to Trino")
+
+def check_pg_connection():
+    if not pg_hook_out.check_connection():
+        raise AirflowSkipException("Failed to connect to Postgres")
+    logger.info("Connected to Postgres")
     
 
 

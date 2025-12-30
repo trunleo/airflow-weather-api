@@ -8,6 +8,7 @@ from airflow.utils.task_group import TaskGroup
 
 # Functions ETL
 from marketprice.fetch_trino_data import (
+    check_pg_connection,
     check_trino_connection,
     fetch_dim_tables,
     fetch_fact_tables,
@@ -64,6 +65,11 @@ with DAG(
         python_callable=check_trino_connection,
     )
 
+    check_pg_connection_task = PythonOperator(
+        task_id="check_pg_connection",
+        python_callable=check_pg_connection,
+    )
+
     with TaskGroup(
         "fetch_trino_tables", tooltip="Fetch Trino tables"
     ) as fetch_trino_tables:
@@ -78,4 +84,4 @@ with DAG(
             op_kwargs={"run_date": "{{ next_ds }}","fact_tables":"{{ params.fact_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
     
-    check_trino_connection_task >> fetch_dim_tables_task >> fetch_fact_tables_task
+    check_trino_connection_task >> check_pg_connection_task >> fetch_dim_tables_task >> fetch_fact_tables_task

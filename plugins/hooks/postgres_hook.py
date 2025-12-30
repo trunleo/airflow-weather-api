@@ -15,6 +15,12 @@ class ForecastPostgresHook(PostgresHook):
 
     Used for reading coordinate data and inserting forecast results.
     """
+    def check_connection(self):
+        with self.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                result = cur.fetchone()
+                return result is not None
 
     def load_locations(self, sql: str) -> list[dict[str, Any]]:
         """Query the list of coordinates from Postgres.
