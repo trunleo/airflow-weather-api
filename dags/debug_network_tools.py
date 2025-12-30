@@ -21,17 +21,18 @@ default_args = {
     "catchup": False,
 }
 
-TRINO_HOST = Variable.get("TRINO_HOST", default_var=""),
+TRINO_HOST = Variable.get("TRINO_HOST", default_var="trino.aisac-dev.vnsilicon.cloud")
 print(TRINO_HOST)
-TRINO_PORT = Variable.get("TRINO_PORT", default_var=443),
+TRINO_PORT = Variable.get("TRINO_PORT", default_var=443)
 print(TRINO_PORT)
-TRINO_USER = Variable.get("TRINO_USER", default_var=""),
+TRINO_USER = Variable.get("TRINO_USER", default_var="")
 print(TRINO_USER)
-TRINO_PASSWORD = Variable.get("TRINO_PASSWORD", default_var=""),
+TRINO_PASSWORD = Variable.get("TRINO_PASSWORD", default_var="")
 print(TRINO_PASSWORD)
-TRINO_CATALOG = Variable.get("TRINO_CATALOG", default_var=""),
+TRINO_CATALOG = Variable.get("TRINO_CATALOG", default_var="")
 print(TRINO_CATALOG)
 TRINO_SCHEMA = Variable.get("TRINO_SCHEMA", default_var="")
+print(TRINO_SCHEMA)
 
 def check_dns():
     logger.info(f"Checking DNS resolution for {TRINO_HOST}")
@@ -77,12 +78,12 @@ def check_curl():
         raise
 def check_trino_connection():
     conn = connect(
-            host=TRINO_HOST,
+            host=str(TRINO_HOST),
             port=TRINO_PORT,
-            user=TRINO_USER,
-            auth=BasicAuthentication(TRINO_USER, TRINO_PASSWORD),
-            catalog=TRINO_CATALOG,
-            schema=TRINO_SCHEMA,
+            user=str(TRINO_USER),
+            auth=BasicAuthentication(str(TRINO_USER), str(TRINO_PASSWORD)),
+            catalog=str(TRINO_CATALOG),
+            schema=str(TRINO_SCHEMA),
             request_timeout=10,
         )
     conn.run("SELECT 1")
