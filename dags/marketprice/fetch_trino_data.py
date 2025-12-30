@@ -8,13 +8,6 @@ from hooks.trino_hook import TrinoHook
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-POSTGRES_CONN_ID_OUT = Variable.get(
-    "POSTGRES_CONN_ID_OUT",
-    default_var=Variable.get("POSTGRES_CONN_ID", default_var="marketprice-pg"),
-)
-POSTGRES_CONN_ID_IN = Variable.get(
-    "POSTGRES_CONN_ID_IN", default_var=POSTGRES_CONN_ID_OUT
-)
 
 conn = TrinoHook(
     host=str(Variable.get("TRINO_HOST", default_var="")),
@@ -25,7 +18,7 @@ conn = TrinoHook(
     schema=str(Variable.get("TRINO_SCHEMA", default_var="")),
 )
 
-pg_hook_out = ForecastPostgresHook(postgres_conn_id=POSTGRES_CONN_ID_OUT)
+pg_hook_out = ForecastPostgresHook(postgres_conn_id=weather_db_connection_id)
 
 
 def check_trino_connection():
