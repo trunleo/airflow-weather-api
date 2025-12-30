@@ -16,6 +16,7 @@ class TrinoHook:
         password: str,
         catalog: str,
         schema: str,
+        request_timeout: float = 300.0,
     ) -> None:
         self.conn = connect(
             host=host,
@@ -24,6 +25,7 @@ class TrinoHook:
             auth=BasicAuthentication(user, password),
             catalog=catalog,
             schema=schema,
+            request_timeout=request_timeout,
         )
         self.schema = schema
         self.catalog = catalog
