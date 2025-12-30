@@ -52,7 +52,6 @@ def fetch_dim_tables(**context):
     # Get list of dim tables from context
     # start_date = context.get("start_date")
     # end_date = context.get("end_date")
-    logger.info("Fech data from %s to %s", start_date, end_date)
     if "dim_tables" in context:
         list_dim_tables = [
             tbl.strip() for tbl in context["dim_tables"].split(",") if tbl.strip()
