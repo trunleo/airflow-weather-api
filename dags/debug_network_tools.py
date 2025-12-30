@@ -18,8 +18,12 @@ default_args = {
     "catchup": False,
 }
 
-TRINO_HOST = "trino.aisac-dev.vnsilicon.cloud"
-TRINO_PORT = 443
+TRINO_HOST = Variable.get("TRINO_HOST", default_var=""),
+TRINO_PORT = Variable.get("TRINO_PORT", default_var=443),
+TRINO_USER = Variable.get("TRINO_USER", default_var=""),
+TRINO_PASSWORD = Variable.get("TRINO_PASSWORD", default_var=""),
+TRINO_CATALOG = Variable.get("TRINO_CATALOG", default_var=""),
+TRINO_SCHEMA = Variable.get("TRINO_SCHEMA", default_var="")
 
 def check_dns():
     logger.info(f"Checking DNS resolution for {TRINO_HOST}")
@@ -63,6 +67,19 @@ def check_curl():
     except Exception as e:
         logger.error(f"Curl command failed: {e}")
         raise
+def check_trino_connection():
+    conn = connect(
+            host=TRINO_HOST,
+            port=TRINO_PORT,
+            user=TRINO_USER,
+            auth=BasicAuthentication(TRINO_USER, TRINO_PASSWORD),
+            catalog=TRINO_CATALOG,
+            schema=TRINO_SCHEMA,
+            request_timeout=10,
+        )
+    conn.run("SELECT 1")
+    logger.info("Connected to Trino")
+
 
 with DAG(
     "debug_network_tools",
@@ -87,4 +104,9 @@ with DAG(
         python_callable=check_curl,
     )
 
-    dns_task >> tcp_task >> curl_task
+    trino_task = PythonOperator(
+            task_id="check_trino",
+        python_callable=check_trino_connection,
+    )
+
+    dns_task >> tcp_task >> curl_task >> trino_task
