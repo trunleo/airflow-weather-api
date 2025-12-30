@@ -94,7 +94,7 @@ def check_trino_connection():
 
 def check_pg_connection():
     pg_hook = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
-    df = pg_hook.get_records("SELECT 1")
+    pg_hook.get_conn()
     logger.info("Connected to Postgres")
 
 
