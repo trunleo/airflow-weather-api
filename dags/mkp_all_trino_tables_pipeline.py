@@ -31,7 +31,7 @@ default_args = {
 
 default_params = {
     "dim_tables": Param(
-        default="dim_categories, dim_countries, dim_date, dim_products, dim_units",
+        default="dim_categories, dim_products, dim_units",
         type="string",
         description="The base URL for the alert service API",
     ),
