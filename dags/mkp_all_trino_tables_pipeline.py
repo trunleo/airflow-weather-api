@@ -50,6 +50,11 @@ default_params = {
         type="string",
         description="The base URL for the alert service API",
     ),
+    "skip_dim_tables": Param(
+        default=True,
+        type="boolean",
+        description="Skip fetching dimension tables",
+    ),
 }
 
 with DAG(
@@ -76,7 +81,7 @@ with DAG(
         fetch_dim_tables_task = PythonOperator(
             task_id="fetch_dim_tables",
             python_callable=fetch_dim_tables,
-            op_kwargs={"run_date": "{{ next_ds }}","dim_tables":"{{ params.dim_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
+            op_kwargs={"run_date": "{{ next_ds }}","dim_tables":"{{ params.dim_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}", "skip_dim_tables": "{{ params.skip_dim_tables }}"},
         )
         fetch_fact_tables_task = PythonOperator(
             task_id="fetch_fact_tables",

@@ -48,6 +48,11 @@ def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **conte
 
 
 def fetch_dim_tables(**context):
+    skip_dim_tables = context.get("skip_dim_tables", "True")
+    if str(skip_dim_tables).lower() == "true":
+        logger.info("Skipping dim tables fetching")
+        return
+
     logger.info("Fetching dim tables")
     # Get list of dim tables from context
     # start_date = context.get("start_date")
