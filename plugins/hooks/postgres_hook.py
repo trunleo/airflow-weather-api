@@ -141,12 +141,11 @@ class ForecastPostgresHook(PostgresHook):
         else:
             conflict_clause = ""
         
-        column_value = df[column_name].to_dict("records")
         column_value_str = ", ".join([f"%({c})s" for c in column_name])
 
 
         sql = f"""
-        INSERT INTO {table} ({column_value})
+        INSERT INTO {table} ({column_name})
         VALUES (
             {column_value_str}
         ){conflict_clause};
