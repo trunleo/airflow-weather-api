@@ -145,7 +145,7 @@ class ForecastPostgresHook(PostgresHook):
 
 
         sql = f"""
-        INSERT INTO {table} ({column_name})
+        INSERT INTO {table} ({", ".join(column_name)})
         VALUES (
             {column_value_str}
         ){conflict_clause};
