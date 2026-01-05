@@ -146,9 +146,9 @@ class ForecastPostgresHook(PostgresHook):
 
 
         sql = f"""
-        INSERT INTO {table} ({column_value_str})
+        INSERT INTO {table} ({column_value})
         VALUES (
-            {column_value}
+            {column_value_str}
         ){conflict_clause};
         """
         logger.info("SQL to execute: %s", sql)
