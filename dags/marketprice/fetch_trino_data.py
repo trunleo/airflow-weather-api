@@ -60,7 +60,6 @@ def fetch_dim_tables(**context):
         list_dim_tables = [
             "dim_categories",
             "dim_countries",
-            "dim_date",
             "dim_products",
             "dim_units",
         ]
