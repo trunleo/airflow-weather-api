@@ -23,7 +23,6 @@ class TrinoHook:
             user=user,
             auth=BasicAuthentication(user, password),
             catalog=catalog,
-            schema=schema,
             request_timeout=request_timeout,
         )
         self.catalog = catalog
