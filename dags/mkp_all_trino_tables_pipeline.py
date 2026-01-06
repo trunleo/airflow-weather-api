@@ -101,4 +101,4 @@ with DAG(
             op_kwargs={"run_date": "{{ next_ds }}","gold_tables":"{{ params.gold_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
     
-    [check_trino_connection_task, check_pg_connection_task] >> fetch_trino_tables
+    [check_trino_connection_task, check_pg_connection_task] >> fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task
