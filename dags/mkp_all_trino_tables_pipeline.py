@@ -12,6 +12,7 @@ from marketprice.fetch_trino_data import (
     check_trino_connection,
     fetch_dim_tables,
     fetch_fact_tables,
+    fetch_gold_tables
 )
 
 from airflow import DAG
