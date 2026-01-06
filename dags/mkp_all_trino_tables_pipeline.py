@@ -33,17 +33,17 @@ default_args = {
 default_params = {
     "dim_tables": Param(
         default=None,
-        type=["string", "null"],
+        type=["null", "string"],
         description="The base URL for the alert service API",
     ),
     "fact_tables": Param(
         default=None,
-        type=["string", "null"],
+        type=["null", "string"],
         description="The base URL for the alert service API",
     ),
     "gold_tables": Param(
         default=None,
-        type=["string", "null"],
+        type=["null", "string"],
         description="The base URL for the alert service API",
     ),
     "start_date": Param(
