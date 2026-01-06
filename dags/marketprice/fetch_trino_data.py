@@ -14,9 +14,8 @@ conn = TrinoHook(
     port=int(Variable.get("TRINO_PORT", default_var=443)),
     user=str(Variable.get("TRINO_USER", default_var="")),
     password=str(Variable.get("TRINO_PASSWORD", default_var="")),
-    catalog=str(Variable.get("TRINO_CATALOG", default_var="")),
-    schema=str(Variable.get("TRINO_SCHEMA", default_var="")),
-)
+    catalog=str(Variable.get("TRINO_CATALOG", default_var=""))
+    )
 
 pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
 
