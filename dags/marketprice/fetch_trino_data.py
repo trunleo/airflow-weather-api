@@ -33,7 +33,7 @@ def check_pg_connection():
 
 
 def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **context):
-    if context['date_col']:
+    if "date_col" in context:
         conditions = f"{context['date_col']} >= DATE '{context['start_date']}' AND {context['date_col']} <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
     else:
         conditions = f"price_date >= DATE '{context['start_date']}' AND price_date <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
