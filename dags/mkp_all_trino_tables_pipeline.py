@@ -32,18 +32,13 @@ default_args = {
 
 default_params = {
     "dim_tables": Param(
-        default=None,
-        type=["null", "string"],
+        default="dim_categories, dim_products, dim_units",
+        type="string",
         description="The base URL for the alert service API",
     ),
     "fact_tables": Param(
-        default=None,
-        type=["null", "string"],
-        description="The base URL for the alert service API",
-    ),
-    "gold_tables": Param(
-        default=None,
-        type=["null", "string"],
+        default="fact_daily_prices",
+        type="string",
         description="The base URL for the alert service API",
     ),
     "start_date": Param(
@@ -53,6 +48,11 @@ default_params = {
     ),
     "end_date": Param(
         default=start_date,
+        type="string",
+        description="The base URL for the alert service API",
+    ),
+    "gold_tables": Param(
+        default="daily_product_prices",
         type="string",
         description="The base URL for the alert service API",
     ),
