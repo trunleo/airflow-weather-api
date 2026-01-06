@@ -33,7 +33,10 @@ def check_pg_connection():
 
 
 def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **context):
-    conditions = f"price_date >= DATE '{context['start_date']}' AND price_date <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
+    if context['date_col']:
+        conditions = f"{context['date_col']} >= DATE '{context['start_date']}' AND {context['date_col']} <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
+    else:
+        conditions = f"price_date >= DATE '{context['start_date']}' AND price_date <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
     schema = context.get("schema", "")
     if table_name:
         df = conn.get_table(table_name, condition=conditions, schema = schema)
@@ -98,6 +101,7 @@ def fetch_gold_tables(schema = "dp_gold", **context):
     # Get list of gold tables from context
     start_date = context.get("start_date")
     end_date = context.get("end_date")
+    date_col = "date_time"
     logger.info("Fech data from %s to %s", start_date, end_date)
     if "gold_tables" in context:
         list_gold_tables = [
@@ -107,5 +111,5 @@ def fetch_gold_tables(schema = "dp_gold", **context):
         list_gold_tables = ["fact_daily_prices"]
     for table_name in list_gold_tables:
         logger.info("Fetching %s", table_name)
-        count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date, schema = schema)
+        count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date, schema = schema, date_col = date_col)
         logger.info("Inserted %s rows into %s", count, table_name)
