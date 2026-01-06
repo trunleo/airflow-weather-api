@@ -91,21 +91,3 @@ def fetch_fact_tables(**context):
         logger.info("Fetching %s", table_name)
         count = fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date)
         logger.info("Inserted %s rows into %s", count, table_name)
-
-
-def fetch_gold_tables(**context):
-    logger.info("Fetching gold tables")
-    # Get list of gold tables from context
-    start_date = context.get("start_date")
-    end_date = context.get("end_date")
-    logger.info("Fech data from %s to %s", start_date, end_date)
-    if "gold_tables" in context:
-        list_gold_tables = [
-            tbl.strip() for tbl in context["gold_tables"].split(",") if tbl.strip()
-        ]
-    else:
-        list_gold_tables = ["dp_gold.fact_daily_prices"]
-    for table_name in list_gold_tables:
-        logger.info("Fetching %s", table_name)
-        count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date)
-        logger.info("Inserted %s rows into %s", count, table_name)

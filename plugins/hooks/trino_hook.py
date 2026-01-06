@@ -54,8 +54,8 @@ class TrinoHook:
     def get_table(self, table_name: str, **context) -> pd.DataFrame:
         """Retrieves the specified table from the database and returns it as a pandas DataFrame."""
         if context['condition']:
-            return self.run(f"SELECT * FROM {self.schema}.{table_name} WHERE {context['condition']}")
-        return self.run(f"SELECT * FROM {self.schema}.{table_name}")
+            return self.run(f"SELECT * FROM {table_name} WHERE {context['condition']}")
+        return self.run(f"SELECT * FROM {table_name}")
 
     def insert_table(self, table_name: str, df: pd.DataFrame) -> None:
         """Inserts the specified DataFrame into the specified table in the database."""
