@@ -35,8 +35,9 @@ def check_pg_connection():
 
 def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **context):
     conditions = f"price_date >= DATE '{context['start_date']}' AND price_date <= DATE '{context['end_date']}'" if "start_date" in context and "end_date" in context else ""
+    schema = context.get("schema", "")
     if table_name:
-        df = conn.get_table(table_name, condition=conditions)
+        df = conn.get_table(table_name, condition=conditions, schema = schema)
         count = pg_hook_out.upsert_table(
             table=table_name,
             df=df,
@@ -47,7 +48,7 @@ def fetch_trino_table(table_name: str = "", conflict_key: list = ["id"], **conte
         return count
 
 
-def fetch_dim_tables(**context):
+def fetch_dim_tables(schema = "dp_silver", **context):
     skip_dim_tables = context.get("skip_dim_tables", "True")
     if str(skip_dim_tables).lower() == "true":
         logger.info("Skipping dim tables fetching")
@@ -71,11 +72,11 @@ def fetch_dim_tables(**context):
     for table_name in list_dim_tables:
         logger.info("Fetching %s", table_name)
         # count = fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
-        count = fetch_trino_table(table_name, conflict_key=["id"])
+        count = fetch_trino_table(table_name, conflict_key=["id"], schema = schema)
         logger.info("Inserted %s rows into %s", count, table_name)
 
 
-def fetch_fact_tables(**context):
+def fetch_fact_tables(schema = "dp_silver", **context):
     logger.info("Fetching fact tables")
     # Get list of fact tables from context
     start_date = context.get("start_date")
@@ -89,11 +90,11 @@ def fetch_fact_tables(**context):
         list_fact_tables = ["fact_daily_prices"]
     for table_name in list_fact_tables:
         logger.info("Fetching %s", table_name)
-        count = fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date)
+        count = fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date, schema = schema)
         logger.info("Inserted %s rows into %s", count, table_name)
 
 
-def fetch_gold_tables(**context):
+def fetch_gold_tables(schema = "dp_gold", **context):
     logger.info("Fetching gold tables")
     # Get list of gold tables from context
     start_date = context.get("start_date")
@@ -104,8 +105,8 @@ def fetch_gold_tables(**context):
             tbl.strip() for tbl in context["gold_tables"].split(",") if tbl.strip()
         ]
     else:
-        list_gold_tables = ["dp_gold.fact_daily_prices"]
+        list_gold_tables = ["fact_daily_prices"]
     for table_name in list_gold_tables:
         logger.info("Fetching %s", table_name)
-        count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date)
+        count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date, schema = schema)
         logger.info("Inserted %s rows into %s", count, table_name)

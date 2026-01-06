@@ -14,8 +14,7 @@ class TrinoHook:
         port: int,
         user: str,
         password: str,
-        catalog: str,
-        schema: str,
+        catalog: str
         request_timeout: float = 300.0,
     ) -> None:
         self.conn = connect(
@@ -27,7 +26,6 @@ class TrinoHook:
             schema=schema,
             request_timeout=request_timeout,
         )
-        self.schema = schema
         self.catalog = catalog
         self.host = host
         self.port = port
@@ -53,9 +51,10 @@ class TrinoHook:
 
     def get_table(self, table_name: str, **context) -> pd.DataFrame:
         """Retrieves the specified table from the database and returns it as a pandas DataFrame."""
+        schema = context['schema']
         if context['condition']:
-            return self.run(f"SELECT * FROM {table_name} WHERE {context['condition']}")
-        return self.run(f"SELECT * FROM {table_name}")
+            return self.run(f"SELECT * FROM {schema}.{table_name} WHERE {context['condition']}")
+        return self.run(f"SELECT * FROM {schema}.{table_name}")
 
     def insert_table(self, table_name: str, df: pd.DataFrame) -> None:
         """Inserts the specified DataFrame into the specified table in the database."""
