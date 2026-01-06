@@ -50,6 +50,11 @@ default_params = {
         type="string",
         description="The base URL for the alert service API",
     ),
+    "gold_tables": Param(
+        default="fact_daily_prices",
+        type="string",
+        description="The base URL for the alert service API",
+    ),
     "skip_dim_tables": Param(
         default=True,
         type="boolean",
@@ -88,5 +93,11 @@ with DAG(
             python_callable=fetch_fact_tables,
             op_kwargs={"run_date": "{{ next_ds }}","fact_tables":"{{ params.fact_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
+
+        fetch_gold_tables_task = PythonOperator(
+            task_id="fetch_gold_tables",
+            python_callable=fetch_gold_tables,
+            op_kwargs={"run_date": "{{ next_ds }}","gold_tables":"{{ params.gold_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
+        )
     
-    check_trino_connection_task >> check_pg_connection_task >> fetch_dim_tables_task >> fetch_fact_tables_task
+    [check_trino_connection_task, check_pg_connection_task] >> fetch_trino_tables
