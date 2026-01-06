@@ -14,7 +14,7 @@ class TrinoHook:
         port: int,
         user: str,
         password: str,
-        catalog: str
+        catalog: str,
         request_timeout: float = 300.0,
     ) -> None:
         self.conn = connect(
