@@ -40,7 +40,7 @@ def upsert_table(df, table_name: str = "", conflict_key: list = ["id"], **contex
     return count
 
 def transform_product_tbl(**context):
-    daily_product_prices_df = get_table("fact_daily_prices", **context)
+    daily_product_prices_df = get_table("fact_daily_prices", schema="public")
     
     re_col_list = ['date_time', 'category_name', 'price_type', 'product_id', 'product_name']
     product_df = daily_product_prices_df[re_col_list].drop_duplicates()
