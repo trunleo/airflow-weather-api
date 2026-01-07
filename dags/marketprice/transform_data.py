@@ -45,8 +45,9 @@ def transform_product_tbl(**context):
     re_col_list = ['date_time', 'category_name', 'price_type', 'product_id', 'product_name']
     product_df = daily_product_prices_df[re_col_list].drop_duplicates()
     logger.info("First 10 rows of product table: %s", product_df.head(10))
+    return product_df
     
-def transform_product_prices(**context):    
+# def transform_product_prices(**context):    
 
 # def fetch_dim_tables(**context):
 #     skip_dim_tables = context.get("skip_dim_tables", "True")
