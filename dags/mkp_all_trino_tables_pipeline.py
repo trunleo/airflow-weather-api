@@ -65,6 +65,16 @@ default_params = {
         type="boolean",
         description="Skip fetching dimension tables",
     ),
+    "skip_fact_tables": Param(
+        default=False,
+        type="boolean",
+        description="Skip fetching fact tables",
+    ),
+    "skip_gold_tables": Param(
+        default=False,
+        type="boolean",
+        description="Skip fetching gold tables",
+    )
 }
 
 with DAG(
@@ -96,13 +106,13 @@ with DAG(
         fetch_fact_tables_task = PythonOperator(
             task_id="fetch_fact_tables",
             python_callable=fetch_fact_tables,
-            op_kwargs={"run_date": "{{ next_ds }}","fact_tables":"{{ params.fact_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
+            op_kwargs={"run_date": "{{ next_ds }}","fact_tables":"{{ params.fact_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}", "skip_fact_tables": "{{ params.skip_fact_tables }}"},
         )
 
         fetch_gold_tables_task = PythonOperator(
             task_id="fetch_gold_tables",
             python_callable=fetch_gold_tables,
-            op_kwargs={"run_date": "{{ next_ds }}","gold_tables":"{{ params.gold_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
+            op_kwargs={"run_date": "{{ next_ds }}","gold_tables":"{{ params.gold_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}", "skip_gold_tables": "{{ params.skip_gold_tables }}"},
         )
     
     with TaskGroup(

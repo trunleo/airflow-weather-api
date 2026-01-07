@@ -79,6 +79,10 @@ def fetch_dim_tables(schema = "dp_silver", **context):
 
 
 def fetch_fact_tables(schema = "dp_silver", **context):
+    skip_fact_tables = context.get("skip_fact_tables", "True")
+    if str(skip_fact_tables).lower() == "true":
+        logger.info("Skipping fact tables fetching")
+        return
     logger.info("Fetching fact tables")
     # Get list of fact tables from context
     start_date = context.get("start_date")
@@ -97,6 +101,11 @@ def fetch_fact_tables(schema = "dp_silver", **context):
 
 
 def fetch_gold_tables(schema = "dp_gold", **context):
+    skip_gold_tables = context.get("skip_gold_tables", "True")
+    if str(skip_gold_tables).lower() == "true":
+        logger.info("Skipping gold tables fetching")
+        return
+    
     logger.info("Fetching gold tables")
     # Get list of gold tables from context
     start_date = context.get("start_date")
