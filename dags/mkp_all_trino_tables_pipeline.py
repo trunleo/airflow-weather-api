@@ -125,5 +125,5 @@ with DAG(
         )
 
 
-    [check_trino_connection_task, check_pg_connection_task] >> fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task 
-    transform_product_data
+    [check_trino_connection_task, check_pg_connection_task] >> fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task >> transform_product_data
+    
