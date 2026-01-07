@@ -15,7 +15,7 @@ from marketprice.fetch_trino_data import (
     fetch_gold_tables
 )
 
-from marketprice.transform_date import (
+from marketprice.transform_data import (
     transform_product_tbl
 )
 
