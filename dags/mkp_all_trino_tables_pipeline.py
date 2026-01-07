@@ -15,6 +15,10 @@ from marketprice.fetch_trino_data import (
     fetch_gold_tables
 )
 
+from marketprice.transform_date import (
+    transform_product_tbl
+)
+
 from airflow import DAG
 
 start_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -101,4 +105,15 @@ with DAG(
             op_kwargs={"run_date": "{{ next_ds }}","gold_tables":"{{ params.gold_tables }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
     
-    [check_trino_connection_task, check_pg_connection_task] >> fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task
+    with TaskGroup(
+        "transform_data", tooltip="Transform data based on defined schema"
+    ) as transform_data:
+        transform_product_data = PythonOperator(
+            task_id="transform_product_data",
+            python_callable=transform_product_tbl,
+            op_kwargs={"run_date": "{{ next_ds }}"},
+        )
+
+
+    [check_trino_connection_task, check_pg_connection_task] >> fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task 
+    transform_product_data

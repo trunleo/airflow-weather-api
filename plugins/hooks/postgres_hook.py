@@ -113,6 +113,31 @@ class ForecastPostgresHook(PostgresHook):
                 result = cur.fetchone()
                 return result[0] if result[0] is not None else 0
 
+    def get_table(self, table: str, **context) -> pd.DataFrame:
+        """Get a table from Postgres.
+
+        Args:
+            table: The name of the table.
+
+        Returns:
+            A DataFrame representing the table.
+        """
+        if 'schema' in context:
+            schema = context['schema']
+        else:
+            schema = "public"
+        with self.get_conn() as conn:
+            with conn.cursor() as cur:
+                if context['condition']:
+                    cur.execute(f"SELECT * FROM {schema}.{table} WHERE {context['condition']}")
+                    rows = cur.fetchall()
+                else:
+                    cur.execute(f"SELECT * FROM {schema}.{table}")
+                    rows = cur.fetchall()
+
+        df = pd.DataFrame(rows, columns=[desc[0] for desc in cur.description])
+        return df
+
     def upsert_table(self,
         table: str,
         df: pd.DataFrame,
