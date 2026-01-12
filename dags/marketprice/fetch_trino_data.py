@@ -20,12 +20,20 @@ conn = TrinoHook(
 pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
 
 
-def check_trino_connection():
+def check_trino_connection(**context):
+    skip_check_connection = context.get("skip_check_connection", True)
+    if skip_check_connection:
+        logger.info("Skip check Trino connection")
+        return
     if not conn.check_connect():
         raise AirflowSkipException("Failed to connect to Trino")
     logger.info("Connected to Trino")
 
-def check_pg_connection():
+def check_pg_connection(**context):
+    skip_check_connection = context.get("skip_check_connection", True)
+    if skip_check_connection:
+        logger.info("Skip check Postgres connection")
+        return
     if not pg_hook_out.check_connection():
         raise AirflowSkipException("Failed to connect to Postgres")
     logger.info("Connected to Postgres")

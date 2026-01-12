@@ -60,6 +60,11 @@ default_params = {
         type="string",
         description="The base URL for the alert service API",
     ),
+    "skip_check_connection": Param(
+        default=True,
+        type="boolean",
+        description="Skip check connection",
+    ),
     "skip_dim_tables": Param(
         default=True,
         type="boolean",
@@ -88,11 +93,13 @@ with DAG(
     check_trino_connection_task = PythonOperator(
         task_id="check_trino_connection",
         python_callable=check_trino_connection,
+        op_kwargs={"skip_check_connection": "{{ params.skip_check_connection }}"}
     )
 
     check_pg_connection_task = PythonOperator(
         task_id="check_pg_connection",
         python_callable=check_pg_connection,
+        op_kwargs={"skip_check_connection": "{{ params.skip_check_connection }}"}
     )
 
     with TaskGroup(
