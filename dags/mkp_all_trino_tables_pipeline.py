@@ -71,12 +71,12 @@ default_params = {
         description="Skip fetching dimension tables",
     ),
     "skip_fact_tables": Param(
-        default=False,
+        default=True,
         type="boolean",
         description="Skip fetching fact tables",
     ),
     "skip_gold_tables": Param(
-        default=False,
+        default=True,
         type="boolean",
         description="Skip fetching gold tables",
     )

@@ -1,4 +1,6 @@
+from rich.box import columns
 import logging
+from datetime import datetime
 
 from airflow.exceptions import AirflowSkipException
 from airflow.models import Variable
@@ -39,16 +41,36 @@ def upsert_table(df, table_name: str = "", conflict_key: list = ["id"], **contex
     logger.info("First 10 rows in table: %s", df.head(10))
     return count
 
+
 def transform_product_tbl(**context):
     mapping_df = get_table("mapping_list", schema="public")
     logger.info("First 10 rows of mapping table: %s", mapping_df.head(10))
 
     
     daily_product_prices_df = get_table("daily_product_prices", schema="public")
-    re_col_list = ['date_time', 'category_name', 'price_type', 'product_id', 'product_name']
+    re_col_list = ['category_name', 'price_type', 'product_id', 'product_name']
     product_df = daily_product_prices_df[re_col_list].drop_duplicates()
-    logger.info("First 10 rows of product table: %s", product_df.head(10))
+
+    product_df.rename(
+        columns={
+            "category_name": "group_name",
+            "price_type": "category_name",
+            "product_id": "id",
+            "product_name": "name_th"
+        }, inplace=True
+    )
+
+    product_df["name_en"] = product_df["name_th"].map(mapping_df.set_index("NAME_TH")["NAME_EN"].to_dict())
+    product_df["group_name_en"] = product_df["group_name"].map(mapping_df.set_index("GROUP_TYPE_TH")["GROUP_TYPE_EN"].to_dict())
+    product_df["category_name_en"] = product_df["category_name"].map(mapping_df.set_index("CATEGORY_TH")["CATEGORY_EN"].to_dict())
+    product_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    product_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    logger.info("First 10 rows of product table: %s", product_df.head(10))
+
+
+    
+
     return product_df
     
 # def transform_product_prices(**context):    
