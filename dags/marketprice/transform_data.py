@@ -128,7 +128,7 @@ def transform_product_prices_tbl(**context):
 
     product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH_SHORT")["UNIT_EN"].to_dict())
     for i in product_price_df[product_price_df["unit"].isnull()].iterrows():
-        i["unit"] = f"{str(i["currency_code"])}/{str(i["unit_name_en"])}"
+        i["unit"] = f"{i["currency_code"]}/{i["unit_name_en"]}"
 
 
     product_price_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
