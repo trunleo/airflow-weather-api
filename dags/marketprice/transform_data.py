@@ -90,6 +90,8 @@ def transform_product_tbl(**context):
 def transform_product_prices_tbl(**context):
     mapping_df = get_table("mapping_list", schema="public")
     logger.info("First 10 rows of mapping table: %s", mapping_df.head(10))
+    mapping_df['UNIT_TH_SHORT'] = mapping_df['UNIT_TH'].str.split('/').str[1].str.strip()
+    mapping_df['UNIT_TH_SHORT'] = mapping_df['UNIT_TH_SHORT'].str.replace('.', '')
 
     
     daily_product_prices_df = get_table(
@@ -106,7 +108,8 @@ def transform_product_prices_tbl(**context):
         'product_id',
         'max_price',
         'min_price',
-        'unit_name'
+        'unit_name',
+        'currency_code'
     ]
     product_price_df = daily_product_prices_df[re_col_list].drop_duplicates()
 
@@ -122,7 +125,7 @@ def transform_product_prices_tbl(**context):
         }, inplace=True
     )
 
-    product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH")["UNIT_EN"].to_dict())
+    product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH_SHORT")["UNIT_EN"].to_dict())
     product_price_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_price_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_price_df["date"] = product_price_df["date"].apply(lambda x: datetime.strftime(x, "%Y-%m-%d %H:%M:%S"))
@@ -140,49 +143,3 @@ def transform_product_prices_tbl(**context):
         raise
     return count
     
-# def transform_product_prices(**context):    
-
-# def fetch_dim_tables(**context):
-#     skip_dim_tables = context.get("skip_dim_tables", "True")
-#     if str(skip_dim_tables).lower() == "true":
-#         logger.info("Skipping dim tables fetching")
-#         return
-
-#     logger.info("Fetching dim tables")
-#     # Get list of dim tables from context
-#     # start_date = context.get("start_date")
-#     # end_date = context.get("end_date")
-#     if "dim_tables" in context:
-#         list_dim_tables = [
-#             tbl.strip() for tbl in context["dim_tables"].split(",") if tbl.strip()
-#         ]
-#     else:
-#         list_dim_tables = [
-#             "dim_categories",
-#             "dim_countries",
-#             "dim_products",
-#             "dim_units",
-#         ]
-#     for table_name in list_dim_tables:
-#         logger.info("Fetching %s", table_name)
-#         # count = fetch_trino_table(table_name, conflict_key=["id"], start_date=start_date, end_date=end_date)
-#         count = fetch_trino_table(table_name, conflict_key=["id"])
-#         logger.info("Inserted %s rows into %s", count, table_name)
-
-
-# def fetch_fact_tables(**context):
-#     logger.info("Fetching fact tables")
-#     # Get list of fact tables from context
-#     start_date = context.get("start_date")
-#     end_date = context.get("end_date")
-#     logger.info("Fech data from %s to %s", start_date, end_date)
-#     if "fact_tables" in context:
-#         list_fact_tables = [
-#             tbl.strip() for tbl in context["fact_tables"].split(",") if tbl.strip()
-#         ]
-#     else:
-#         list_fact_tables = ["fact_daily_prices"]
-#     for table_name in list_fact_tables:
-#         logger.info("Fetching %s", table_name)
-#         count = fetch_trino_table(table_name, conflict_key=["price_date", "product_id"], start_date=start_date, end_date=end_date)
-#         logger.info("Inserted %s rows into %s", count, table_name)
