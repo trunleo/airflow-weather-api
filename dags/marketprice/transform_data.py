@@ -128,12 +128,16 @@ def transform_product_prices_tbl(**context):
 
     product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH_SHORT")["UNIT_EN"].to_dict())
     for i in product_price_df[product_price_df["unit"].isnull()].iterrows():
-        i["unit"] = f"{i["currency_code"]}/{i["unit_name_en"]}"
+        i["unit"] = f"{str(i["currency_code"])}/{str(i["unit_name_en"])}"
 
 
     product_price_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_price_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_price_df["date"] = product_price_df["date"].apply(lambda x: datetime.strftime(x, "%Y-%m-%d %H:%M:%S"))
+    product_price_df.drop(
+        columns=["unit_name_en", "currency_code"],
+        inplace=True
+    )
     # Get latest id
     latest_id = pg_hook_out.get_latest_id("products_price")
     logger.info("Latest ID from database: %s", latest_id)
