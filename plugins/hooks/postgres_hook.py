@@ -138,6 +138,21 @@ class ForecastPostgresHook(PostgresHook):
         df = pd.DataFrame(rows, columns=[desc[0] for desc in cur.description])
         return df
 
+    def get_latest_id(self, table: str) -> int:
+        """Get the latest ID from a table.
+
+        Args:
+            table: The name of the table.
+
+        Returns:
+            The latest ID value.
+        """
+        with self.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT MAX(id) FROM {table}")
+                result = cur.fetchone()
+                return result[0] if result[0] is not None else 0
+
     def upsert_table(self,
         table: str,
         df: pd.DataFrame,

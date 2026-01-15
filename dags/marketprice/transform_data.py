@@ -86,6 +86,59 @@ def transform_product_tbl(**context):
         logger.error("Failed to insert into products: %s", e)
         raise
     return count
+
+def transform_product_prices_tbl(**context):
+    mapping_df = get_table("mapping_list", schema="public")
+    logger.info("First 10 rows of mapping table: %s", mapping_df.head(10))
+
+    
+    daily_product_prices_df = get_table(
+        "daily_product_prices", 
+        schema="public", 
+        date_col="date_time",
+        start_date=context.get("start_date"),
+        end_date=context.get("end_date")
+        )
+    logger.info("First 10 rows of daily_product_prices table: %s", daily_product_prices_df.head(10))
+    
+    re_col_list = [
+        'date_time',
+        'product_id',
+        'max_price',
+        'min_price',
+        'unit_name'
+    ]
+    product_price_df = daily_product_prices_df[re_col_list].drop_duplicates()
+
+    logger.info("First 10 rows of product table: %s", product_price_df.head(10))
+
+    product_price_df.rename(
+        columns={
+            "date_time": "date",
+            "product_id": "product_id",
+            "max_price": "price_max",
+            "min_price": "price_min",
+            "unit_name": "unit_th"
+        }, inplace=True
+    )
+
+    product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH")["UNIT_EN"].to_dict())
+    product_price_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    product_price_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    product_price_df["date"] = product_price_df["date"].apply(lambda x: datetime.strftime(x, "%Y-%m-%d %H:%M:%S"))
+    # Get latest id
+    latest_id = pg_hook_out.get_latest_id("products_price")
+    logger.info("Latest ID from database: %s", latest_id)
+    product_price_df["id"] = range(latest_id + 1, latest_id + len(product_price_df) + 1)
+
+    logger.info("First 10 rows of product table: %s", product_price_df.head(10))
+    try:
+        count = upsert_table(product_price_df, "products_price", ["product_id", "date"])
+        logger.info("Inserted %s rows into products price", count)
+    except Exception as e:
+        logger.error("Failed to insert into products price: %s", e)
+        raise
+    return count
     
 # def transform_product_prices(**context):    
 

@@ -130,6 +130,11 @@ with DAG(
             python_callable=transform_product_tbl,
             op_kwargs={"run_date": "{{ next_ds }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
+        transform_product_prices_data = PythonOperator(
+            task_id="transform_product_prices_data",
+            python_callable=transform_product_prices_tbl,
+            op_kwargs={"run_date": "{{ next_ds }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
+        )
 
 
     fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task
