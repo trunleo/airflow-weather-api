@@ -16,7 +16,8 @@ from marketprice.fetch_trino_data import (
 )
 
 from marketprice.transform_data import (
-    transform_product_tbl
+    transform_product_tbl,
+    transform_product_prices_tbl
 )
 
 from airflow import DAG
