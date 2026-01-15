@@ -128,7 +128,7 @@ with DAG(
         transform_product_data = PythonOperator(
             task_id="transform_product_data",
             python_callable=transform_product_tbl,
-            op_kwargs={"run_date": "{{ next_ds }}"},
+            op_kwargs={"run_date": "{{ next_ds }}", "start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"},
         )
 
 

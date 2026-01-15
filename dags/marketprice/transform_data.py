@@ -49,7 +49,9 @@ def transform_product_tbl(**context):
     daily_product_prices_df = get_table(
         "daily_product_prices", 
         schema="public", 
-        date_col="date_time"
+        date_col="date_time",
+        start_date=context.get("start_date"),
+        end_date=context.get("end_date")
         )
     logger.info("First 10 rows of daily_product_prices table: %s", daily_product_prices_df.head(10))
     
