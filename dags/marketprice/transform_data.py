@@ -1,4 +1,3 @@
-from rich.box import columns
 import logging
 from datetime import datetime
 
