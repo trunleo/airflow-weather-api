@@ -108,8 +108,7 @@ def transform_product_prices_tbl(**context):
         'product_id',
         'max_price',
         'min_price',
-        'unit_name',
-        'currency_code'
+        'unit_name'
     ]
     product_price_df = daily_product_prices_df[re_col_list].drop_duplicates()
 
