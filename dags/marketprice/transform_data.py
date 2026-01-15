@@ -47,8 +47,12 @@ def transform_product_tbl(**context):
 
     
     daily_product_prices_df = get_table("daily_product_prices", schema="public")
+    logger.info("First 10 rows of daily_product_prices table: %s", daily_product_prices_df.head(10))
+    
     re_col_list = ['category_name', 'price_type', 'product_id', 'product_name']
     product_df = daily_product_prices_df[re_col_list].drop_duplicates()
+
+    logger.info("First 10 rows of product table: %s", product_df.head(10))
 
     product_df.rename(
         columns={
