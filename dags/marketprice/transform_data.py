@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
+pg_hook_out = ForecastPostgresHook(postgres_conn_id="marketprice-pg")
 
 
 def check_pg_connection():
@@ -29,7 +29,7 @@ def get_table(table_name: str = "", **context):
     df = pg_hook_out.get_table(table_name, condition=conditions, schema=schema)
     return df
 
-def upsert_table(df, table_name: str = "", conflict_key: list = ["id"], **context):
+def upsert_table(df, table_name: str = "", conflict_key: list = ["id"], **context) -> int :
     count = pg_hook_out.upsert_table(
         table=table_name,
             df=df,
@@ -64,13 +64,18 @@ def transform_product_tbl(**context):
     product_df["category_name_en"] = product_df["category_name"].map(mapping_df.set_index("CATEGORY_TH")["CATEGORY_EN"].to_dict())
     product_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    product_df["product_desc_en"] = None
+    product_df["product_desc_th"] = None
     
     logger.info("First 10 rows of product table: %s", product_df.head(10))
-
-
-    
-
-    return product_df
+    try:
+        count = upsert_table(product_df, "products", ["id"])
+        logger.info("Inserted %s rows into products", count)
+    except Exception as e:
+        logger.error("Failed to insert into products: %s", e)
+        raise
+    return count
     
 # def transform_product_prices(**context):    
 
