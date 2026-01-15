@@ -46,7 +46,11 @@ def transform_product_tbl(**context):
     logger.info("First 10 rows of mapping table: %s", mapping_df.head(10))
 
     
-    daily_product_prices_df = get_table("daily_product_prices", schema="public")
+    daily_product_prices_df = get_table(
+        "daily_product_prices", 
+        schema="public", 
+        date_col="date_time"
+        )
     logger.info("First 10 rows of daily_product_prices table: %s", daily_product_prices_df.head(10))
     
     re_col_list = ['category_name', 'price_type', 'product_id', 'product_name']
