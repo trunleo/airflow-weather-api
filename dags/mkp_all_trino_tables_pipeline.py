@@ -18,7 +18,8 @@ from marketprice.fetch_trino_data import (
 from marketprice.transform_data import (
     transform_product_tbl,
     transform_product_prices_tbl,
-    check_existing_mapping_list
+    check_existing_mapping_list,
+    insert_mapping_data
 )
 
 from airflow import DAG
@@ -143,6 +144,13 @@ with DAG(
         python_callable=check_existing_mapping_list
     )
 
+    insert_mapping_data_task = PythonOperator(
+        task_id="insert_mapping_data",
+        python_callable=insert_mapping_data
+    )
+
+    
+
 
     fetch_dim_tables_task >> fetch_fact_tables_task >> fetch_gold_tables_task
-    [check_trino_connection_task, check_pg_connection_task] >> fetch_trino_tables >> check_mapping_table >> transform_data
+    [check_trino_connection_task, check_pg_connection_task] >> fetch_trino_tables >> check_mapping_table >> insert_mapping_data_task >> transform_data

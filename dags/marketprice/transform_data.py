@@ -168,10 +168,21 @@ def check_existing_mapping_list(**context):
             pg_hook_out.run(sql)
         
         logger.info("Created mapping list table")
-
-        # Load mapping data to mapping table
-        mapping_df = pd.read_csv(csv_path)
-        pg_hook_out.upsert_table(mapping_df, "mapping_list", ["id"])
-        logger.info("Loaded mapping data to mapping table")
     else:
         logger.info("Mapping list table exists")
+
+def insert_mapping_data(**context):
+    # Load mapping data to mapping table
+    mapping_df = pd.read_csv(csv_path)
+    logger.info("First 10 rows of mapping list: %s", mapping_df.head(10))
+    try:
+        pg_hook_out.upsert_table(
+            mapping_df, 
+            "mapping_list", 
+            conflict_key=["ID"],
+            column_name=mapping_df.columns.tolist()
+            )
+        logger.info("Loaded mapping data to mapping table")
+    except Exception as e:
+        logger.error("Failed to load mapping data to mapping table: %s", e)
+        raise
