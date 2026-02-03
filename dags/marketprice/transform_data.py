@@ -176,7 +176,7 @@ def insert_mapping_data(**context):
     mapping_df = pd.read_csv(csv_path)
     logger.info("First 10 rows of mapping list: %s", mapping_df.head(10))
     try:
-        pg_hook_out.upsert_table(
+        count = upsert_table(
             mapping_df, 
             "mapping_list", 
             conflict_key=["ID"],
