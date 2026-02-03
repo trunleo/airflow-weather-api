@@ -182,7 +182,7 @@ def insert_mapping_data(**context):
             conflict_key=["ID"],
             column_name=mapping_df.columns.tolist()
             )
-        logger.info("Loaded mapping data to mapping table")
+        logger.info("Inserted %s rows into mapping list", count)
     except Exception as e:
-        logger.error("Failed to load mapping data to mapping table: %s", e)
+        logger.error("Failed to insert into mapping list: %s", e)
         raise
