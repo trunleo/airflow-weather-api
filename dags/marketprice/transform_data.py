@@ -158,14 +158,14 @@ def check_existing_mapping_list(**context):
         logger.info("Mapping list table does not exist")
         logger.info("Create mapping list table")
 
-        with open("marketprice/sql/mapping_list.sql", "r") as f:
+        with open("sql/mapping_list.sql", "r") as f:
             sql = f.read()
             pg_hook_out.run(sql)
         
         logger.info("Created mapping list table")
 
         # Load mapping data to mapping table
-        mapping_df = pd.read_csv("marketprice/data/mapping_list.csv")
+        mapping_df = pd.read_csv("data/mapping_list.csv")
         pg_hook_out.upsert_table(mapping_df, "mapping_list", ["id"])
         logger.info("Loaded mapping data to mapping table")
     else:
