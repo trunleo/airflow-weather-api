@@ -5,6 +5,7 @@ from airflow.exceptions import AirflowSkipException
 from airflow.models import Variable
 from hooks.postgres_hook import ForecastPostgresHook
 from hooks.trino_hook import TrinoHook
+import pandas as pd
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -157,14 +158,14 @@ def check_existing_mapping_list(**context):
         logger.info("Mapping list table does not exist")
         logger.info("Create mapping list table")
 
-        with open("dags/marketprice/sql/mapping_list.sql", "r") as f:
+        with open("marketprice/sql/mapping_list.sql", "r") as f:
             sql = f.read()
             pg_hook_out.run(sql)
         
         logger.info("Created mapping list table")
 
         # Load mapping data to mapping table
-        mapping_df = pg_hook_in.get_table("mapping_list", schema="public")
+        mapping_df = pd.read_csv("marketprice/data/mapping_list.csv")
         pg_hook_out.upsert_table(mapping_df, "mapping_list", ["id"])
         logger.info("Loaded mapping data to mapping table")
     else:

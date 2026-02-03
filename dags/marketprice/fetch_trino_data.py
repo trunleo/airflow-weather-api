@@ -110,7 +110,7 @@ def fetch_fact_tables(schema = "dp_silver", **context):
 
 def fetch_gold_tables(schema = "dp_gold", **context):
     # create table if not exist
-    with open("dags/marketprice/sql/daily_product_prices.sql", "r") as f:
+    with open("marketprice/sql/daily_product_prices.sql", "r") as f:
         sql = f.read()
         pg_hook_out.run(sql)
 
