@@ -4,7 +4,7 @@
 
 -- DROP TABLE public.daily_product_prices;
 
-CREATE TABLE IF NOT EXIST public.daily_product_prices (
+CREATE TABLE IF NOT EXISTS public.daily_product_prices (
 	date_time timestamp(6) NULL,
 	country_code varchar NULL,
 	category_id varchar NULL,
