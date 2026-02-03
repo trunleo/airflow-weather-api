@@ -18,7 +18,7 @@ conn = TrinoHook(
     catalog=str(Variable.get("TRINO_CATALOG", default_var=""))
     )
 
-pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
+pg_hook_out = ForecastPostgresHook(postgres_conn_id="marketprice-pg")
 
 
 def check_trino_connection(**context):
@@ -111,16 +111,17 @@ def fetch_fact_tables(schema = "dp_silver", **context):
 
 def fetch_gold_tables(schema = "dp_gold", **context):
     # create table if not exist
+    skip_gold_tables = context.get("skip_gold_tables", "True")
+    if str(skip_gold_tables).lower() == "true":
+        logger.info("Skipping gold tables fetching")
+        return
+
     dag_path = os.path.dirname(__file__)
     sql_path = os.path.join(dag_path, "sql", "daily_product_prices.sql")
     with open(sql_path, "r") as f:
         sql = f.read()
         pg_hook_out.run(sql)
-
-    skip_gold_tables = context.get("skip_gold_tables", "True")
-    if str(skip_gold_tables).lower() == "true":
-        logger.info("Skipping gold tables fetching")
-        return
+    logger.info("Created table daily_product_prices")
     
     logger.info("Fetching gold tables")
     # Get list of gold tables from context
