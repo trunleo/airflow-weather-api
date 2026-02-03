@@ -143,7 +143,7 @@ def transform_product_prices_tbl(**context):
     logger.info("Latest ID from database: %s", latest_id)
     product_price_df["id"] = range(latest_id + 1, latest_id + len(product_price_df) + 1)
 
-    logger.info("First 10 rows of product table: %s", product_price_df.head(10))
+    logger.info("First 10 rows of product prices table: %s", product_price_df.head(10))
     try:
         count = upsert_table(product_price_df, "products_price", ["product_id", "date"])
         logger.info("Inserted %s rows into products price", count)
@@ -152,3 +152,20 @@ def transform_product_prices_tbl(**context):
         raise
     return count
     
+def check_existing_mapping_list(**context):
+    if pg_hook_out.check_exist_table("mapping_list") == False:
+        logger.info("Mapping list table does not exist")
+        logger.info("Create mapping list table")
+
+        with open("dags/marketprice/sql/mapping_list.sql", "r") as f:
+            sql = f.read()
+            pg_hook_out.run(sql)
+        
+        logger.info("Created mapping list table")
+
+        # Load mapping data to mapping table
+        mapping_df = pg_hook_in.get_table("mapping_list", schema="public")
+        pg_hook_out.upsert_table(mapping_df, "mapping_list", ["id"])
+        logger.info("Loaded mapping data to mapping table")
+    else:
+        logger.info("Mapping list table exists")

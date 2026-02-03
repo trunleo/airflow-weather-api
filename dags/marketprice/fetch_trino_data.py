@@ -22,8 +22,8 @@ pg_hook_out = ForecastPostgresHook(postgres_conn_id="weather_db_connection_id")
 
 def check_trino_connection(**context):
     skip_check_connection = context.get("skip_check_connection", True)
-    if skip_check_connection:
-        logger.info("Skip check Trino connection")
+    if str(skip_check_connection).lower() == "true":
+        logger.info("Skipping Trino connection check")
         return
     if not conn.check_connect():
         raise AirflowSkipException("Failed to connect to Trino")
@@ -31,8 +31,8 @@ def check_trino_connection(**context):
 
 def check_pg_connection(**context):
     skip_check_connection = context.get("skip_check_connection", True)
-    if skip_check_connection:
-        logger.info("Skip check Postgres connection")
+    if str(skip_check_connection).lower() == "true":
+        logger.info("Skipping Postgres connection check")
         return
     if not pg_hook_out.check_connection():
         raise AirflowSkipException("Failed to connect to Postgres")
@@ -109,6 +109,11 @@ def fetch_fact_tables(schema = "dp_silver", **context):
 
 
 def fetch_gold_tables(schema = "dp_gold", **context):
+    # create table if not exist
+    with open("dags/marketprice/sql/daily_product_prices.sql", "r") as f:
+        sql = f.read()
+        pg_hook_out.run(sql)
+
     skip_gold_tables = context.get("skip_gold_tables", "True")
     if str(skip_gold_tables).lower() == "true":
         logger.info("Skipping gold tables fetching")
@@ -125,7 +130,7 @@ def fetch_gold_tables(schema = "dp_gold", **context):
             tbl.strip() for tbl in context["gold_tables"].split(",") if tbl.strip()
         ]
     else:
-        list_gold_tables = ["fact_daily_prices"]
+        list_gold_tables = ["daily_product_prices"]
     for table_name in list_gold_tables:
         logger.info("Fetching %s", table_name)
         count = fetch_trino_table(table_name, conflict_key=["date_time", "product_id"], start_date=start_date, end_date=end_date, schema = schema, date_col = date_col)

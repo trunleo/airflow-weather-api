@@ -213,4 +213,13 @@ class ForecastPostgresHook(PostgresHook):
             with conn.cursor() as cur:
                 cur.execute(f"SELECT * FROM information_schema.tables WHERE table_name = '{table}'")
                 result = cur.fetchone()
-                return result is not None
+                if result is None:
+                    return False
+                return True
+    
+    def run(self, sql: str) -> None:
+        """Run a SQL query."""
+        with self.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql)
+            conn.commit()
