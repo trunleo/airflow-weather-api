@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 
 from airflow.exceptions import AirflowSkipException
@@ -155,17 +156,21 @@ def transform_product_prices_tbl(**context):
     
 def check_existing_mapping_list(**context):
     if pg_hook_out.check_exist_table("mapping_list") == False:
+        dag_path = os.path.dirname(__file__)
+        sql_path = os.path.join(dag_path, "sql/mapping_list.sql")
+        csv_path = os.path.join(dag_path, "data/mapping_list.csv")
+
         logger.info("Mapping list table does not exist")
         logger.info("Create mapping list table")
 
-        with open("sql/mapping_list.sql", "r") as f:
+        with open(sql_path, "r") as f:
             sql = f.read()
             pg_hook_out.run(sql)
         
         logger.info("Created mapping list table")
 
         # Load mapping data to mapping table
-        mapping_df = pd.read_csv("data/mapping_list.csv")
+        mapping_df = pd.read_csv(csv_path)
         pg_hook_out.upsert_table(mapping_df, "mapping_list", ["id"])
         logger.info("Loaded mapping data to mapping table")
     else:
