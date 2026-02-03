@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 pg_hook_out = ForecastPostgresHook(postgres_conn_id="marketprice-pg")
-
+dag_path = os.path.dirname(__file__)
 
 def check_pg_connection():
     if not pg_hook_out.check_connection():
@@ -156,9 +156,8 @@ def transform_product_prices_tbl(**context):
     
 def check_existing_mapping_list(**context):
     if pg_hook_out.check_exist_table("mapping_list") == False:
-        dag_path = os.path.dirname(__file__)
         sql_path = os.path.join(dag_path, "sql", "mapping_list.sql")
-        csv_path = os.path.join(dag_path, "data", "mapping_list.csv")
+        
 
         logger.info("Mapping list table does not exist")
         logger.info("Create mapping list table")
@@ -173,6 +172,7 @@ def check_existing_mapping_list(**context):
 
 def insert_mapping_data(**context):
     # Load mapping data to mapping table
+    csv_path = os.path.join(dag_path, "data", "mapping_list.csv")
     mapping_df = pd.read_csv(csv_path)
     logger.info("First 10 rows of mapping list: %s", mapping_df.head(10))
     try:
