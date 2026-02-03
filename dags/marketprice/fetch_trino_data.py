@@ -1,4 +1,5 @@
 import logging
+import os
 
 from airflow.exceptions import AirflowSkipException
 from airflow.models import Variable
@@ -110,7 +111,9 @@ def fetch_fact_tables(schema = "dp_silver", **context):
 
 def fetch_gold_tables(schema = "dp_gold", **context):
     # create table if not exist
-    with open("./marketprice/sql/daily_product_prices.sql", "r") as f:
+    dag_path = os.path.dirname(__file__)
+    sql_path = os.path.join(dag_path, "sql", "daily_product_prices.sql")
+    with open(sql_path, "r") as f:
         sql = f.read()
         pg_hook_out.run(sql)
 
