@@ -179,8 +179,7 @@ def insert_mapping_data(**context):
         count = upsert_table(
             mapping_df, 
             "mapping_list", 
-            conflict_key=["ID"],
-            column_name=mapping_df.columns.tolist()
+            conflict_key=["ID"]
             )
         logger.info("Inserted %s rows into mapping list", count)
     except Exception as e:
