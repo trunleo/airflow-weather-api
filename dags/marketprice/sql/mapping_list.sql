@@ -5,15 +5,15 @@
 -- DROP TABLE public.mapping_list;
 
 CREATE TABLE public.mapping_list (
-	"ID" varchar(50) PRIMARY KEY,
-	"NAME_TH" varchar(255) NULL,
-	"APP_NAME_TH" varchar(255) NULL,
-	"NAME_EN" varchar(128) NULL,
-	"APP_NAME_EN" varchar(128) NULL,
-	"GROUP_TYPE_TH" varchar(255) NULL,
-	"GROUP_TYPE_EN" varchar(255) NULL,
-	"CATEGORY_TH" varchar(255) NULL,
-	"CATEGORY_EN" varchar(255) NULL,
-	"UNIT_TH" varchar(50) NULL,
-	"UNIT_EN" varchar(50) NULL
+	id varchar(50) PRIMARY KEY,
+	name_th varchar(255) NULL,
+	app_name_th varchar(255) NULL,
+	name_en varchar(128) NULL,
+	app_name_en varchar(128) NULL,
+	group_type_th varchar(255) NULL,
+	group_type_en varchar(255) NULL,
+	category_th varchar(255) NULL,
+	category_en varchar(255) NULL,
+	unit_th varchar(50) NULL,
+	unit_en varchar(50) NULL
 );
