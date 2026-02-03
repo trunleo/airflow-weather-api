@@ -71,9 +71,9 @@ def transform_product_tbl(**context):
         }, inplace=True
     )
 
-    product_df["name_en"] = product_df["name_th"].map(mapping_df.set_index("NAME_TH")["NAME_EN"].to_dict())
-    product_df["group_name_en"] = product_df["group_name"].map(mapping_df.set_index("GROUP_TYPE_TH")["GROUP_TYPE_EN"].to_dict())
-    product_df["category_name_en"] = product_df["category_name"].map(mapping_df.set_index("CATEGORY_TH")["CATEGORY_EN"].to_dict())
+    product_df["name_en"] = product_df["name_th"].map(mapping_df.set_index("name_th")["name_en"].to_dict())
+    product_df["group_name_en"] = product_df["group_name"].map(mapping_df.set_index("group_type_th")["group_type_en"].to_dict())
+    product_df["category_name_en"] = product_df["category_name"].map(mapping_df.set_index("category_th")["category_en"].to_dict())
     product_df["created_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     product_df["updated_datetime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -92,8 +92,8 @@ def transform_product_tbl(**context):
 def transform_product_prices_tbl(**context):
     mapping_df = get_table("mapping_list", schema="public")
     logger.info("First 10 rows of mapping table: %s", mapping_df.head(10))
-    mapping_df['UNIT_TH_SHORT'] = mapping_df['UNIT_TH'].str.split('/').str[1].str.strip()
-    mapping_df['UNIT_TH_SHORT'] = mapping_df['UNIT_TH_SHORT'].str.replace('.', '')
+    mapping_df['unit_th_short'] = mapping_df['unit_th'].str.split('/').str[1].str.strip()
+    mapping_df['unit_th_short'] = mapping_df['unit_th_short'].str.replace('.', '')
 
     
     daily_product_prices_df = get_table(
@@ -128,7 +128,7 @@ def transform_product_prices_tbl(**context):
         }, inplace=True
     )
 
-    product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("UNIT_TH_SHORT")["UNIT_EN"].to_dict())
+    product_price_df["unit"] = product_price_df["unit_th"].map(mapping_df.set_index("unit_th_short")["unit_en"].to_dict())
     for i, row in product_price_df[product_price_df["unit"].isnull()].iterrows():
         row["unit"] = f"{row["currency_code"]}/{row["unit_name_en"]}"
 
@@ -179,7 +179,7 @@ def insert_mapping_data(**context):
         count = upsert_table(
             mapping_df, 
             "mapping_list", 
-            conflict_key=["ID"]
+            conflict_key=["id"]
             )
         logger.info("Inserted %s rows into mapping list", count)
     except Exception as e:
